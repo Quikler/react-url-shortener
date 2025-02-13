@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DAL.Configurations;
 
-public class UrlEntityTypeConfiguration : IEntityTypeConfiguration<UrlEntity>
+public class UserEntityTypeConfigurations : IEntityTypeConfiguration<UserEntity>
 {
-    public void Configure(EntityTypeBuilder<UrlEntity> builder)
+    public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder
-            .HasOne(u => u.User)
-            .WithMany(u => u.Urls)
+            .HasMany(u => u.Urls)
+            .WithOne(u => u.User)
             .HasForeignKey(u => u.UserId);
     }
 }

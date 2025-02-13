@@ -1,3 +1,4 @@
+using DAL.Configurations;
 using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -5,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) 
+public class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<UserEntity, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<UrlEntity> Urls { get; set; }
@@ -13,6 +14,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new UserEntityTypeConfigurations());
+        modelBuilder.ApplyConfiguration(new UrlEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new RefreshTokenEntityTypeConfiguration());
+
         base.OnModelCreating(modelBuilder);
     }
 }

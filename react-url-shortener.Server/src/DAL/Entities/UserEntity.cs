@@ -9,4 +9,6 @@ public class UserEntity : IdentityUser<Guid>
         get => base.UserName ?? "";
         set => base.UserName = value;
     }
+
+    public List<UrlEntity> Urls { get; set; } = [];
 }

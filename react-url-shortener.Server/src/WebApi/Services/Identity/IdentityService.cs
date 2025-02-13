@@ -30,7 +30,7 @@ public class IdentityService(AppDbContext dbContext,
         };
 
         var createResult = await userManager.CreateAsync(user, signupDto.Password);
-        return createResult.Succeeded ? await GenerateAuthDtoForUserAsync(user) : FailureDto.BadRequest("Cannot signup.");
+        return createResult.Succeeded ? await GenerateAuthDtoForUserAsync(user) : FailureDto.BadRequest(createResult.Errors.Select(e => e.Description));
     }
 
     public async Task<Result<AuthDto, FailureDto>> LoginAsync(LoginDto loginDto)

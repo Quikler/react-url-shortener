@@ -5,10 +5,11 @@ using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Common;
 using WebApi.DTOs;
+using WebApi.Utils.Extensions;
 
 namespace WebApi.Services.UrlShortener;
 
-public class UrlShortenerService(AppDbContext dbContext) : IUrlShortenerService
+public class UrlShortenerService(AppDbContext dbContext, IUrlShortenerAuthorizationService urlShortenerAuthorizationService) : IUrlShortenerService
 {
     public async Task<Result<string, FailureDto>> GetOriginalUrlAsync(string shortenedUrl)
     {
@@ -17,21 +18,23 @@ public class UrlShortenerService(AppDbContext dbContext) : IUrlShortenerService
             .Select(u => u.UrlOriginal)
             .FirstOrDefaultAsync();
 
-        if (url is null) return FailureDto.NotFound("Url not found.");
-
-        return url;
+        return url is null ? FailureDto.NotFound("Url not found.") : url;
     }
 
-    public async Task<Result<string, FailureDto>> CreateShortenUrlAsync(string originalUrl)
+    public async Task<Result<string, FailureDto>> CreateShortenUrlAsync(string originalUrl, Guid userId)
     {
-        if (await dbContext.Urls.AnyAsync(u => u.UrlOriginal == originalUrl)) return FailureDto.Conflict("Url already exist.");
+        if (await dbContext.Urls.AnyAsync(u => u.UrlOriginal == originalUrl))
+        {
+            return FailureDto.Conflict("Url already exist.");
+        }
 
         var shortCode = GenerateShortCode();
 
         var url = new UrlEntity
         {
-            UrlOriginal = NormalizeUrl(originalUrl),
+            UrlOriginal = originalUrl,
             ShortCode = shortCode,
+            UserId = userId,
         };
 
         await dbContext.Urls.AddAsync(url);
@@ -40,8 +43,13 @@ public class UrlShortenerService(AppDbContext dbContext) : IUrlShortenerService
         return rows == 0 ? FailureDto.BadRequest("Cannot create url.") : shortCode;
     }
 
-    public async Task<Result<bool, FailureDto>> DeleteUrlAsync(string shortenedUrl)
+    public async Task<Result<bool, FailureDto>> DeleteUrlAsync(string shortenedUrl, Guid userId)
     {
+        if (!await urlShortenerAuthorizationService.IsUserOwnsShortenedUrlAsync(userId, shortenedUrl))
+        {
+            return FailureDto.Forbidden("User doesn't own url.");
+        }
+
         int rows = await dbContext.Urls
             .Where(u => u.ShortCode == shortenedUrl)
             .ExecuteDeleteAsync();
@@ -62,14 +70,5 @@ public class UrlShortenerService(AppDbContext dbContext) : IUrlShortenerService
         }
 
         return shortCode.ToString();
-    }
-
-    private static string NormalizeUrl(string input)
-    {
-        if (!input.StartsWith("http://") && !input.StartsWith("https://"))
-        {
-            input = "https://" + input;
-        }
-        return input;
     }
 }

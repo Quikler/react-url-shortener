@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using DAL;
 using DAL.Entities;
@@ -20,9 +21,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<TokenProvider>();
 builder.Services.AddScoped<IUrlShortenerService, UrlShortenerService>();
+builder.Services.AddScoped<IUrlShortenerAuthorizationService, UrlShortenerAuthorizationService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 
-builder.Services.AddControllers(options => 
+builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidateModelStateFilter>();
 });
@@ -118,11 +120,17 @@ app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStaticFiles();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "react-url-shortener API v1");
+        options.InjectJavascript("/swagger/custom-auth.js");
+    });
 }
 
 app.UseHttpsRedirection();
