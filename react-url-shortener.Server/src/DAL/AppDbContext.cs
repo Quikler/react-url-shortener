@@ -1,13 +1,12 @@
 using DAL.Configurations;
 using DAL.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
-    : IdentityDbContext<UserEntity, IdentityRole<Guid>, Guid>(options)
+    : IdentityDbContext<UserEntity, RoleEntity, Guid>(options)
 {
     public DbSet<UrlEntity> Urls { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }

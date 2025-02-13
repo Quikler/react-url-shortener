@@ -3,6 +3,7 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+tz.txt
 *.db
 *.db-shm
 *.db-wal

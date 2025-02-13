@@ -9,9 +9,12 @@ public static class ApiRoutes
 
     public static class Urls
     {
-        public const string Get = BASE + "/url/{shortCode}";
-        public const string Create = BASE + "/url";
-        public const string Delete = BASE + "/url/{shortCode}";
+        public const string GetInfo = BASE + "/urls/{urlId}/info";
+        public const string GetAll = BASE + "/urls";
+        public const string Create = BASE + "/urls";
+        public const string Delete = BASE + "/urls/{urlId}";
+        public const string GetAbout = BASE + "/urls/about";
+        public const string UpdateAbout = BASE + "/urls/about";
     }
 
     public static class Identity

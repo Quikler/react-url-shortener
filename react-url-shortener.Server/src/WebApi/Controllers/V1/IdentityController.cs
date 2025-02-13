@@ -14,8 +14,6 @@ public class IdentityController(IIdentityService identityService) : ControllerBa
     [HttpPost(ApiRoutes.Identity.Login)]
     public async Task<IActionResult> Login(LoginRequest loginRequest)
     {
-        if (!ModelState.IsValid) return BadRequest(new FailureResponse(ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))));
-
         var result = await identityService.LoginAsync(loginRequest.ToDto());
 
         return result.Match(
@@ -31,8 +29,6 @@ public class IdentityController(IIdentityService identityService) : ControllerBa
     [HttpPost(ApiRoutes.Identity.Signup)]
     public async Task<IActionResult> Signup(SignupRequest signupRequest)
     {
-        if (!ModelState.IsValid) return BadRequest(new FailureResponse(ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))));
-
         var result = await identityService.SignupAsync(signupRequest.ToDto());
 
         return result.Match(

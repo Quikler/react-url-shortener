@@ -1,7 +1,7 @@
-using System.Net;
 using System.Text;
 using DAL;
 using DAL.Entities;
+using DAL.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +35,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
 
 builder.Services
-    .AddIdentity<UserEntity, IdentityRole<Guid>>(options =>
+    .AddIdentity<UserEntity, RoleEntity>(options =>
     {
         options.Password.RequireDigit = false;
         options.Password.RequiredLength = 8;
@@ -48,6 +48,7 @@ builder.Services
         options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
         options.Lockout.AllowedForNewUsers = true;
     })
+    .AddRoles<RoleEntity>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
@@ -121,6 +122,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseStaticFiles();
+
+using (var scope = app.Services.CreateAsyncScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+
+    await serviceProvider.SeedDefaultRolesAsync();
+    await serviceProvider.SeedDefaultAdminAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

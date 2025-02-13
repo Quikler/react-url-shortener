@@ -1,7 +1,9 @@
 using WebApi.Contracts.V1.Responses;
 using WebApi.Contracts.V1.Responses.Identity;
+using WebApi.Contracts.V1.Responses.Url;
 using WebApi.DTOs;
 using WebApi.DTOs.Identity;
+using WebApi.DTOs.Url;
 
 namespace WebApi.Mapping;
 
@@ -24,6 +26,30 @@ public static class DtoToApiContract
         {
             Id = userDto.Id,
             UserName = userDto.UserName,
+        };
+    }
+
+    public static UrlResponse ToResponse(this UrlDto urlDto)
+    {
+        return new UrlResponse
+        {
+            Id = urlDto.Id,
+            UserId = urlDto.UserId,
+            CreatedAt = urlDto.CreatedAt,
+            ShortCode = urlDto.ShortCode,
+            UrlOriginal = urlDto.UrlOriginal,
+        };
+    }
+
+    public static UrlInfoResponse ToResponse(this UrlInfoDto urlDto)
+    {
+        return new UrlInfoResponse
+        {
+            Id = urlDto.Id,
+            UserId = urlDto.UserId,
+            CreatedAt = urlDto.CreatedAt,
+            ShortCode = urlDto.ShortCode,
+            UrlOriginal = urlDto.UrlOriginal,
         };
     }
 }

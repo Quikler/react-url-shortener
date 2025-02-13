@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
+using WebApi.Mapping;
 using WebApi.Services.UrlShortener;
 using WebApi.Utils.Extensions;
 
@@ -10,20 +11,43 @@ namespace WebApi.Controllers.V1;
 
 public class UrlsShortenerController(IUrlShortenerService urlShortenerService) : ControllerBase
 {
+    [HttpGet(ApiRoutes.Urls.GetAll)]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await urlShortenerService.GetAllAsync();
+
+        return result.Match(
+            urlDtos => Ok(urlDtos.Select(u => u.ToResponse())),
+            failure => failure.ToActionResult()
+        );
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet(ApiRoutes.Urls.GetInfo)]
+    public async Task<IActionResult> GetInfo([FromRoute] Guid urlId)
+    {
+        var result = await urlShortenerService.GetInfoAsync(urlId);
+
+        return result.Match(
+            urlDto => Ok(urlDto.ToResponse()),
+            failure => failure.ToActionResult()
+        );
+    }
+
     [HttpGet("/{shortCode}")]
     public async Task<IActionResult> RedirectToOriginal([FromRoute] string shortCode)
     {
-        var result = await urlShortenerService.GetOriginalUrlAsync(shortCode);
+        var result = await urlShortenerService.GetOriginalUrlByShortCodeAsync(shortCode);
 
         return result.Match(
-            Redirect,
+            urlDto => Redirect(urlDto.UrlOriginal),
             failure => failure.ToActionResult()
         );
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost(ApiRoutes.Urls.Create)]
-    public async Task<IActionResult> Create([FromQuery] [Url] string url)
+    public async Task<IActionResult> Create([FromQuery][Url] string url)
     {
         if (!HttpContext.TryGetUserId(out var userId))
         {
@@ -33,25 +57,54 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
         var result = await urlShortenerService.CreateShortenUrlAsync(url, userId);
 
         return result.Match(
-            shortCode => CreatedAtAction(nameof(RedirectToOriginal), new { shortCode }, shortCode),
+            urlDto => CreatedAtAction(nameof(RedirectToOriginal), new { shortCode = urlDto.ShortCode }, urlDto),
             failure => failure.ToActionResult()
         );
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpDelete(ApiRoutes.Urls.Delete)]
-    public async Task<IActionResult> Delete([FromRoute] string shortCode)
+    public async Task<IActionResult> Delete([FromRoute] Guid urlId)
     {
         if (!HttpContext.TryGetUserId(out var userId))
         {
             return Unauthorized();
         }
 
-        var result = await urlShortenerService.DeleteUrlAsync(shortCode, userId);
+        var result = await urlShortenerService.DeleteUrlAsync(urlId, userId);
 
         return result.Match(
             success => NoContent(),
             failure => failure.ToActionResult()
         );
+    }
+
+    [HttpGet(ApiRoutes.Urls.GetAbout)]
+    public async Task<IActionResult> GetAbout()
+    {
+        try
+        {
+            var about = await System.IO.File.ReadAllTextAsync("about-alg.txt");
+            return Ok(about);
+        }
+        catch
+        {
+            return BadRequest("Cannot get about.");
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [HttpPut(ApiRoutes.Urls.UpdateAbout)]
+    public async Task<IActionResult> UpdateAbout([FromQuery] string about)
+    {
+        try
+        {
+            await System.IO.File.WriteAllTextAsync("about-alg.txt", about);
+            return Ok(about);
+        }
+        catch
+        {
+            return BadRequest("Cannot update about.");
+        }
     }
 }

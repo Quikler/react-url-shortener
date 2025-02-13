@@ -5,23 +5,33 @@ using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Common;
 using WebApi.DTOs;
-using WebApi.Utils.Extensions;
+using WebApi.DTOs.Url;
+using WebApi.Mapping;
 
 namespace WebApi.Services.UrlShortener;
 
 public class UrlShortenerService(AppDbContext dbContext, IUrlShortenerAuthorizationService urlShortenerAuthorizationService) : IUrlShortenerService
 {
-    public async Task<Result<string, FailureDto>> GetOriginalUrlAsync(string shortenedUrl)
+    public async Task<Result<List<UrlDto>, FailureDto>> GetAllAsync()
     {
-        var url = await dbContext.Urls
-            .Where(u => u.ShortCode == shortenedUrl)
-            .Select(u => u.UrlOriginal)
-            .FirstOrDefaultAsync();
+        var urls = await dbContext.Urls.ToListAsync();
 
-        return url is null ? FailureDto.NotFound("Url not found.") : url;
+        return urls
+            .Select(u => u.ToUrlDto())
+            .ToList();
     }
 
-    public async Task<Result<string, FailureDto>> CreateShortenUrlAsync(string originalUrl, Guid userId)
+    public async Task<Result<UrlDto, FailureDto>> GetOriginalUrlByShortCodeAsync(string shortCode)
+    {
+        var urlDto = await dbContext.Urls
+            .Where(u => u.ShortCode == shortCode)
+            .Select(u => u.ToUrlDto()) // Optimize SQL query a bit
+            .FirstOrDefaultAsync();
+
+        return urlDto is null ? FailureDto.NotFound("Url not found.") : urlDto;
+    }
+
+    public async Task<Result<UrlDto, FailureDto>> CreateShortenUrlAsync(string originalUrl, Guid userId)
     {
         if (await dbContext.Urls.AnyAsync(u => u.UrlOriginal == originalUrl))
         {
@@ -40,21 +50,36 @@ public class UrlShortenerService(AppDbContext dbContext, IUrlShortenerAuthorizat
         await dbContext.Urls.AddAsync(url);
         int rows = await dbContext.SaveChangesAsync();
 
-        return rows == 0 ? FailureDto.BadRequest("Cannot create url.") : shortCode;
+        return rows == 0 ? FailureDto.BadRequest("Cannot create url.") : url.ToUrlDto();
     }
 
-    public async Task<Result<bool, FailureDto>> DeleteUrlAsync(string shortenedUrl, Guid userId)
+    public async Task<Result<bool, FailureDto>> DeleteUrlAsync(Guid urlId, Guid userId)
     {
-        if (!await urlShortenerAuthorizationService.IsUserOwnsShortenedUrlAsync(userId, shortenedUrl))
+        if (!await dbContext.Urls.AnyAsync(u => u.Id == urlId))
+        {
+            return FailureDto.NotFound("Url not found.");
+        }
+
+        if (!await urlShortenerAuthorizationService.IsUserOwnsUrlAsync(userId, urlId))
         {
             return FailureDto.Forbidden("User doesn't own url.");
         }
 
         int rows = await dbContext.Urls
-            .Where(u => u.ShortCode == shortenedUrl)
+            .Where(u => u.Id == urlId)
             .ExecuteDeleteAsync();
 
         return rows == 0 ? FailureDto.BadRequest("Cannot delete url.") : true;
+    }
+
+    public async Task<Result<UrlInfoDto, FailureDto>> GetInfoAsync(Guid urlId)
+    {
+        var url = await dbContext.Urls
+            .Where(u => u.Id == urlId)
+            .Select(u => u.ToUrlInfoDto())
+            .FirstOrDefaultAsync();
+
+        return url is null ? FailureDto.NotFound("Url not found.") : url;
     }
 
     private const string Base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

@@ -5,10 +5,10 @@ namespace WebApi.Services.UrlShortener;
 
 public class UrlShortenerAuthorizationService(AppDbContext dbContext) : IUrlShortenerAuthorizationService
 {
-    public async Task<bool> IsUserOwnsShortenedUrlAsync(Guid userId, string originalUrl)
+    public async Task<bool> IsUserOwnsUrlAsync(Guid userId, Guid urlId)
     {
         return await dbContext.Urls
-            .Where(u => u.UrlOriginal == originalUrl)
+            .Where(u => u.Id == urlId)
             .AnyAsync(u => u.UserId == userId);
     }
 }

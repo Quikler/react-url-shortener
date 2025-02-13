@@ -12,13 +12,19 @@ public class TokenProvider(IOptions<JwtConfiguration> jwtConfiguration)
 {
     private readonly JwtConfiguration _jwtConfiguration = jwtConfiguration.Value;
 
-    public string CreateToken(UserEntity user)
+    public string CreateToken(UserEntity user, IEnumerable<string>? roles = null)
     {
         List<Claim> claims = [
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         ];
+
+        // Add roles to JWT token
+        if (roles is not null)
+        {
+            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.SecretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
