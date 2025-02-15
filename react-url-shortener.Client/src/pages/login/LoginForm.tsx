@@ -4,8 +4,11 @@ import Label from "@src/components/ui/Label";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@src/components/ui/ErrorMessage";
+import { useAuth } from "@src/hooks/useAuth";
 
 const LoginForm = () => {
+  const { loginUser } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -18,13 +21,12 @@ const LoginForm = () => {
     },
   });
 
+  const handleFormSubmit = handleSubmit(async (data) => {
+    await loginUser(data);
+  });
+
   return (
-    <form
-      onSubmit={handleSubmit((data) => {
-        console.log(data);
-      })}
-      className="mt-8 space-y-4"
-    >
+    <form onSubmit={handleFormSubmit} className="mt-8 space-y-4">
       <div className="flex flex-col gap-2">
         <Label>Username</Label>
         <Input

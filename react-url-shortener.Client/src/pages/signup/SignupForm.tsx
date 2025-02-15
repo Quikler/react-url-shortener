@@ -2,10 +2,13 @@ import Button from "@src/components/ui/Button";
 import ErrorMessage from "@src/components/ui/ErrorMessage";
 import Input from "@src/components/ui/Input";
 import Label from "@src/components/ui/Label";
+import { useAuth } from "@src/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 const SignupForm = () => {
+  const { signupUser } = useAuth();
+
   const {
     register,
     trigger,
@@ -20,8 +23,12 @@ const SignupForm = () => {
     },
   });
 
+  const handleFormSubmit = handleSubmit(async (data) => {
+    await signupUser(data);
+  });
+
   return (
-    <form className="mt-8 space-y-4" onSubmit={handleSubmit((data) => console.log(data))}>
+    <form className="mt-8 space-y-4" onSubmit={handleFormSubmit}>
       <div className="flex flex-col gap-2">
         <Label>Username</Label>
         <Input

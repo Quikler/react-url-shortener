@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 /**
  * Func to get variant style
  * @constructor

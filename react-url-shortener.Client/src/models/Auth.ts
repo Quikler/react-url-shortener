@@ -1,20 +1,20 @@
 export interface LoginRequest {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }
 
 export interface SignupRequest {
-    username: string;
-    password: string;
-    confirmPassword: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface AuthSuccessResponse {
-    token: string;
-    user: UserResponse;
+  token: string;
+  user: UserResponse;
 }
 
 export interface UserResponse {
-    id: string;
-    username: string;
+  id: string;
+  username: string;
 }

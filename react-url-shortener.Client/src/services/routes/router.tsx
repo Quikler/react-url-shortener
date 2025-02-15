@@ -1,5 +1,6 @@
 import App from "@src/App";
 import MainLayout from "@src/components/layouts/MainLayout/MainLayout";
+import { AuthProvider } from "@src/hooks/useAuth";
 import AboutPage from "@src/pages/about/AboutPage";
 import LoginPage from "@src/pages/login/LoginPage";
 import SignupPage from "@src/pages/signup/SignupPage";
@@ -10,9 +11,11 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <MainLayout>
-        <App />
-      </MainLayout>
+      <AuthProvider>
+        <MainLayout>
+          <App />
+        </MainLayout>
+      </AuthProvider>
     ),
     children: [
       {

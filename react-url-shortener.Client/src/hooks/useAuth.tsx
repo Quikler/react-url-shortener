@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@services/axios/instance";
-import { LoginRequest, SignupRequest } from "@src/models/Auth";
+import { AuthSuccessResponse, LoginRequest, SignupRequest } from "@src/models/Auth";
 import { AuthRoutes } from "@src/services/api/ApiRoutes";
 import { AuthService } from "@src/services/api/AuthService";
 
@@ -13,17 +13,17 @@ export type UserProfile = {
 interface AuthContextType {
   token: string | null | undefined;
   user: UserProfile | null | undefined;
-  loginUser: (request: LoginRequest) => void;
-  signupUser: (request: SignupRequest) => void;
-  logoutUser: () => void;
+  loginUser: (request: LoginRequest) => Promise<AuthSuccessResponse | undefined>;
+  signupUser: (request: SignupRequest) => Promise<AuthSuccessResponse | undefined>;
+  logoutUser: () => Promise<void>;
   isUserLoggedIn: () => boolean;
 }
 
-type Props = { children: React.ReactNode };
+type AuthProviderProps = { children: React.ReactNode };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-export const AuthProvider = ({ children }: Props) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null | undefined>(undefined);
@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }: Props) => {
     })
       .then((data) => {
         if (data) {
+         console.log("DAT", data) 
           setToken(data.token);
           setUser(data.user);
         }
@@ -111,38 +112,43 @@ export const AuthProvider = ({ children }: Props) => {
     }
   }, [user]);
 
-  const signupUser = (request: SignupRequest) => {
-    AuthService.signup(request)
-      .then((response) => {
-        if (response) {
-          setToken(response.token);
-          setUser(response.user);
-        }
-      })
-      .catch((e) => console.error("Unable to signup:", e.message));
+  const signupUser = async (request: SignupRequest) => {
+    try {
+      const data = await AuthService.signup(request);
+      if (data) {
+        setToken(data.token);
+        setUser(data.user);
+      }
+      return data;
+    } catch (e: any) {
+      console.error("Unable to signup:", e.message);
+    }
   };
 
-  const loginUser = (request: LoginRequest) => {
-    AuthService.login(request)
-      .then((response) => {
-        if (response) {
-          setToken(response.token);
-          setUser(response.user);
-        }
-      })
-      .catch((e) => console.error("Unable to login:", e.message));
+  const loginUser = async (request: LoginRequest) => {
+    try {
+      const data = await AuthService.login(request);
+      if (data) {
+        setToken(data.token);
+        setUser(data.user);
+      }
+      return data;
+    } catch (e: any) {
+      console.error("Unable to login:", e.message);
+    }
   };
 
   const isUserLoggedIn = () => !!user;
 
-  const logoutUser = () => {
-    AuthService.logout()
-      .then(() => {
-        setUser(null);
-        setToken(null);
-        navigate("/");
-      })
-      .catch((e) => console.error("Unable to logout:", e.message));
+  const logoutUser = async () => {
+    try {
+      await AuthService.logout();
+      setUser(null);
+      setToken(null);
+      navigate("/");
+    } catch (e: any) {
+      console.error("Unable to logout:", e.message);
+    }
   };
 
   const value = useMemo(
