@@ -9,7 +9,7 @@ public static class ApiContractToDto
     {
         return new LoginDto
         {
-            UserName = request.UserName,
+            Username = request.Username,
             Password = request.Password,
         };
     }
@@ -18,7 +18,7 @@ public static class ApiContractToDto
     {
         return new SignupDto
         {
-            UserName = request.UserName,
+            Username = request.Username,
             Password = request.Password,
         };
     }

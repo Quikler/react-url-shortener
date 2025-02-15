@@ -12,7 +12,21 @@ using WebApi.Providers;
 using WebApi.Services.Identity;
 using WebApi.Services.UrlShortener;
 
+const string CORS_POLICY = "MY_CORS";
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CORS_POLICY, policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 builder.WebHost.UseUrls("https://localhost:7207");
 
@@ -118,7 +132,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-app.MapControllers();
+app.UseCors(CORS_POLICY);
+
+app.MapControllers().RequireCors(CORS_POLICY);
 
 app.UseAuthentication();
 app.UseAuthorization();

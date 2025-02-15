@@ -11,7 +11,7 @@ public static class DomainToDto
         return new UserDto
         {
             Id = userEntity.Id,
-            UserName = userEntity.UserName,
+            Username = userEntity.UserName,
         };
     }
 

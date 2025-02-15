@@ -22,14 +22,14 @@ public class IdentityService(AppDbContext dbContext,
 
     public async Task<Result<AuthDto, FailureDto>> SignupAsync(SignupDto signupDto)
     {
-        if (await dbContext.Users.AnyAsync(u => u.UserName == signupDto.UserName))
+        if (await dbContext.Users.AnyAsync(u => u.UserName == signupDto.Username))
         {
             return FailureDto.Conflict("Username already exist.");
         }
 
         var user = new UserEntity
         {
-            UserName = signupDto.UserName,
+            UserName = signupDto.Username,
         };
 
         var createResult = await userManager.CreateAsync(user, signupDto.Password);
@@ -38,7 +38,7 @@ public class IdentityService(AppDbContext dbContext,
 
     public async Task<Result<AuthDto, FailureDto>> LoginAsync(LoginDto loginDto)
     {
-        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.UserName);
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
 
         if (user is null)
         {

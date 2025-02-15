@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
 using WebApi.Contracts.V1.Requests.Identity;
-using WebApi.Contracts.V1.Responses;
 using WebApi.Mapping;
 using WebApi.Services.Identity;
 using WebApi.Utils.Extensions;
@@ -12,7 +11,7 @@ namespace WebApi.Controllers.V1;
 public class IdentityController(IIdentityService identityService) : ControllerBase
 {
     [HttpPost(ApiRoutes.Identity.Login)]
-    public async Task<IActionResult> Login(LoginRequest loginRequest)
+    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
         var result = await identityService.LoginAsync(loginRequest.ToDto());
 
@@ -27,7 +26,7 @@ public class IdentityController(IIdentityService identityService) : ControllerBa
     }
 
     [HttpPost(ApiRoutes.Identity.Signup)]
-    public async Task<IActionResult> Signup(SignupRequest signupRequest)
+    public async Task<IActionResult> Signup([FromBody] SignupRequest signupRequest)
     {
         var result = await identityService.SignupAsync(signupRequest.ToDto());
 

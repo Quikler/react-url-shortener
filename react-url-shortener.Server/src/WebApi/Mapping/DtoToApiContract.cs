@@ -25,7 +25,7 @@ public static class DtoToApiContract
         return new UserResponse
         {
             Id = userDto.Id,
-            UserName = userDto.UserName,
+            Username = userDto.Username,
         };
     }
 
