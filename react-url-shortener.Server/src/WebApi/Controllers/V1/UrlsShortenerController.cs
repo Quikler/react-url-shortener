@@ -93,7 +93,7 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
         }
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [HttpPut(ApiRoutes.Urls.UpdateAbout)]
     public async Task<IActionResult> UpdateAbout([FromQuery] string about)
     {
