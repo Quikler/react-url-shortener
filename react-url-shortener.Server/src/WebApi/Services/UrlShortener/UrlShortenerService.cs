@@ -21,14 +21,14 @@ public class UrlShortenerService(AppDbContext dbContext, IUrlShortenerAuthorizat
             .ToList();
     }
 
-    public async Task<Result<UrlDto, FailureDto>> GetOriginalUrlByShortCodeAsync(string shortCode)
+    public async Task<Result<string, FailureDto>> GetOriginalUrlByShortCodeAsync(string shortCode)
     {
-        var urlDto = await dbContext.Urls
+        var urlOriginal = await dbContext.Urls
             .Where(u => u.ShortCode == shortCode)
-            .Select(u => u.ToUrlDto()) // Optimize SQL query a bit
+            .Select(u => u.UrlOriginal) // Optimize SQL query a bit
             .FirstOrDefaultAsync();
 
-        return urlDto is null ? FailureDto.NotFound("Url not found.") : urlDto;
+        return urlOriginal is null ? FailureDto.NotFound("Url not found.") : urlOriginal;
     }
 
     public async Task<Result<UrlDto, FailureDto>> CreateShortenUrlAsync(string originalUrl, Guid userId)

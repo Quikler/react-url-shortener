@@ -29,27 +29,26 @@ public static class DtoToApiContract
         };
     }
 
-    public static UrlResponse ToResponse(this UrlDto urlDto)
+    public static UrlResponse ToResponse(this UrlDto urlDto, string rootApiUrl)
     {
         return new UrlResponse
         {
             Id = urlDto.Id,
             UserId = urlDto.UserId,
-            CreatedAt = urlDto.CreatedAt,
-            ShortCode = urlDto.ShortCode,
+            UrlShortened = $"{rootApiUrl}/{urlDto.ShortCode}",
             UrlOriginal = urlDto.UrlOriginal,
         };
     }
 
-    public static UrlInfoResponse ToResponse(this UrlInfoDto urlDto)
+    public static UrlInfoResponse ToResponse(this UrlInfoDto urlInfoDto, string rootApiUrl)
     {
         return new UrlInfoResponse
         {
-            Id = urlDto.Id,
-            UserId = urlDto.UserId,
-            CreatedAt = urlDto.CreatedAt,
-            ShortCode = urlDto.ShortCode,
-            UrlOriginal = urlDto.UrlOriginal,
+            Id = urlInfoDto.Id,
+            UserId = urlInfoDto.UserId,
+            CreatedAt = urlInfoDto.CreatedAt,
+            UrlShortened = $"{rootApiUrl}/{urlInfoDto.ShortCode}",
+            UrlOriginal = urlInfoDto.UrlOriginal,
         };
     }
 }

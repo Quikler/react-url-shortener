@@ -9,7 +9,7 @@ using WebApi.Utils.Extensions;
 
 namespace WebApi.Controllers.V1;
 
-public class UrlsShortenerController(IUrlShortenerService urlShortenerService) : ControllerBase
+public class UrlsShortenerController(IUrlShortenerService urlShortenerService) : BaseApiController
 {
     [HttpGet(ApiRoutes.Urls.GetAll)]
     public async Task<IActionResult> GetAll()
@@ -17,7 +17,7 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
         var result = await urlShortenerService.GetAllAsync();
 
         return result.Match(
-            urlDtos => Ok(urlDtos.Select(u => u.ToResponse())),
+            urlDtos => Ok(urlDtos.Select(u => u.ToResponse(RootApiUrl))),
             failure => failure.ToActionResult()
         );
     }
@@ -29,7 +29,7 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
         var result = await urlShortenerService.GetInfoAsync(urlId);
 
         return result.Match(
-            urlDto => Ok(urlDto.ToResponse()),
+            urlInfoDto => Ok(urlInfoDto.ToResponse(RootApiUrl)),
             failure => failure.ToActionResult()
         );
     }
@@ -40,7 +40,7 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
         var result = await urlShortenerService.GetOriginalUrlByShortCodeAsync(shortCode);
 
         return result.Match(
-            urlDto => Redirect(urlDto.UrlOriginal),
+            Redirect,
             failure => failure.ToActionResult()
         );
     }
@@ -57,7 +57,7 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
         var result = await urlShortenerService.CreateShortenUrlAsync(url, userId);
 
         return result.Match(
-            urlDto => CreatedAtAction(nameof(RedirectToOriginal), new { shortCode = urlDto.ShortCode }, urlDto),
+            urlDto => CreatedAtAction(nameof(RedirectToOriginal), new { shortCode = urlDto.ShortCode }, urlDto.ToResponse(RootApiUrl)),
             failure => failure.ToActionResult()
         );
     }
