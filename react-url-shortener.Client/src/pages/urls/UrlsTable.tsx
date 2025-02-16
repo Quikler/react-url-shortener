@@ -36,7 +36,7 @@ const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
   };
 
   return (
-    <table className="rounded-xl">
+    <>
       <Modal title="Choose an option" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div>
           <div>
@@ -46,9 +46,11 @@ const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
             <ButtonLink to={(selectedUrl && selectedUrl?.urlShortened) || "#"} target="_blank">
               Redirect
             </ButtonLink>
-            <Button variant="info">Info</Button>
+            <ButtonLink to={`/urls/${selectedUrl?.id}/info`} variant="info">
+              Info
+            </ButtonLink>
             <Button
-              onClick={() => navigator.clipboard.writeText(selectedUrl?.urlShortened ?? "#")}
+              onClick={() => selectedUrl && navigator.clipboard.writeText(selectedUrl.urlShortened)}
               variant="secondary"
             >
               Copy
@@ -56,43 +58,44 @@ const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
           </div>
         </div>
       </Modal>
-
-      <UrlsTableHeader columns={["Id", "Original URL", "Short URL"]} />
-      <tbody className="divide-y-1 divide-black-300">
-        {urls.map((url) => (
-          <UrlsTableRow
-            key={url.id}
-            url={url}
-            columns={["id", "urlOriginal", "urlShortened"]}
-            isHighlighted={user?.id === url.userId}
-            wrapper={(index, content) => {
-              if (index === 2) {
-                const link = (
-                  <button
-                    //to={url.urlShortened}
-                    //target="_blank"
-                    onClick={() => handleShortUrlClick(url)}
-                    className="px-2 py-1 text-blue-400 hover:text-blue-500 rounded"
-                  >
-                    {content}
-                  </button>
-                );
-
-                if (url.userId === user?.id || hasRole(Roles.Admin)) {
-                  return (
-                    <div className="flex justify-between">
-                      {link}
-                      <Garbage onClick={() => handleDeleteUrl(url.id)} cursor="pointer" />
-                    </div>
+      <table className="rounded-xl">
+        <UrlsTableHeader columns={["Id", "Original URL", "Short URL"]} />
+        <tbody className="divide-y-1 divide-black-300">
+          {urls.map((url) => (
+            <UrlsTableRow
+              key={url.id}
+              url={url}
+              columns={["id", "urlOriginal", "urlShortened"]}
+              isHighlighted={user?.id === url.userId}
+              wrapper={(index, content) => {
+                if (index === 2) {
+                  const link = (
+                    <button
+                      //to={url.urlShortened}
+                      //target="_blank"
+                      onClick={() => handleShortUrlClick(url)}
+                      className="px-2 py-1 text-blue-400 hover:text-blue-500 rounded"
+                    >
+                      {content}
+                    </button>
                   );
+
+                  if (url.userId === user?.id || hasRole(Roles.Admin)) {
+                    return (
+                      <div className="flex justify-between">
+                        {link}
+                        <Garbage onClick={() => handleDeleteUrl(url.id)} cursor="pointer" />
+                      </div>
+                    );
+                  }
                 }
-              }
-              return content;
-            }}
-          />
-        ))}
-      </tbody>
-    </table>
+                return content;
+              }}
+            />
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 };
 

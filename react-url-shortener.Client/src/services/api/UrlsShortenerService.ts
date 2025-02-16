@@ -13,6 +13,15 @@ export abstract class UrlsShortenerService {
     }
   }
 
+  static async getInfo(urlId: string, config?: AxiosRequestConfig<any> | undefined) {
+    try {
+      const response = await api.get(`${UrlRoutes.base}/${urlId}`, config);
+      return response.data;
+    } catch (e: any) {
+      throwIfErrorNotCancelError(e);
+    }
+  }
+
   static async create(url: string, config?: AxiosRequestConfig<any> | undefined) {
     try {
       const response = await api.post(`${UrlRoutes.base}?url=${url}`, {}, config);

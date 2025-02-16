@@ -4,7 +4,9 @@ import { AuthProvider } from "@src/hooks/useAuth";
 import AboutPage from "@src/pages/about/AboutPage";
 import LoginPage from "@src/pages/login/LoginPage";
 import SignupPage from "@src/pages/signup/SignupPage";
+import UrlsMain from "@src/pages/urls/UrlsMain";
 import UrlsPage from "@src/pages/urls/UrlsPage";
+import UrlInfoPage from "@src/pages/urls/{urlId}/UrlInfoPage";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -19,12 +21,26 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        index: true,
+        path: "urls",
         element: <UrlsPage />,
+        children: [
+          {
+            index: true,
+            element: <UrlsMain />,
+          },
+          {
+            path: ":urlId/info",
+            element: <UrlInfoPage />,
+          },
+        ],
       },
       {
         path: "urls",
         element: <UrlsPage />,
+        children: [
+          { path: "", index: true, element: <UrlsMain /> },
+          { path: ":urlId/info", element: <UrlInfoPage /> },
+        ],
       },
       {
         path: "login",
@@ -35,7 +51,7 @@ export const router = createBrowserRouter([
         element: <SignupPage />,
       },
       {
-        path: "about",
+        index: true,
         element: <AboutPage />,
       },
     ],

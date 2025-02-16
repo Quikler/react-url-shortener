@@ -30,12 +30,12 @@ const MainHeader = () => {
         >
           <ul className="lg:flex gap-4 max-lg:space-y-3 max-lg:fixed bg-white max-lg:w-3/4 max-lg:top-0 max-lg:h-full max-lg:left-0 max-lg:p-6  z-50">
             <li className="max-lg:border-b border-gray-400 max-lg:py-3 px-3">
-              <CustomLink variant={isLinkActive("/") ? "primary" : "secondary"} to="/">
+              <CustomLink variant={isLinkActive("/urls") ? "primary" : "secondary"} to="/urls">
                 Urls
               </CustomLink>
             </li>
             <li className="max-lg:border-b border-gray-400 max-lg:py-3 px-3">
-              <CustomLink variant={isLinkActive("/about") ? "primary" : "secondary"} to="/about">
+              <CustomLink variant={isLinkActive("/") ? "primary" : "secondary"} to="/">
                 About
               </CustomLink>
             </li>
