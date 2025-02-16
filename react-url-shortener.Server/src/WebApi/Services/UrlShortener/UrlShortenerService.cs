@@ -53,16 +53,16 @@ public class UrlShortenerService(AppDbContext dbContext, IUrlShortenerAuthorizat
         return rows == 0 ? FailureDto.BadRequest("Cannot create url.") : url.ToUrlDto();
     }
 
-    public async Task<Result<bool, FailureDto>> DeleteUrlAsync(Guid urlId, Guid userId)
+    public async Task<Result<bool, FailureDto>> DeleteUrlAsync(Guid urlId, Guid userId, string[] userRoles)
     {
         if (!await dbContext.Urls.AnyAsync(u => u.Id == urlId))
         {
             return FailureDto.NotFound("Url not found.");
         }
 
-        if (!await urlShortenerAuthorizationService.IsUserOwnsUrlAsync(userId, urlId))
+        if (!await urlShortenerAuthorizationService.IsUserAuthorizedAsync(userId, urlId, userRoles))
         {
-            return FailureDto.Forbidden("User doesn't own url.");
+            return FailureDto.Forbidden("User doesn't authorized to url.");
         }
 
         int rows = await dbContext.Urls
@@ -72,8 +72,13 @@ public class UrlShortenerService(AppDbContext dbContext, IUrlShortenerAuthorizat
         return rows == 0 ? FailureDto.BadRequest("Cannot delete url.") : true;
     }
 
-    public async Task<Result<UrlInfoDto, FailureDto>> GetInfoAsync(Guid urlId)
+    public async Task<Result<UrlInfoDto, FailureDto>> GetInfoAsync(Guid userId, Guid urlId, string[] userRoles)
     {
+        if (!await urlShortenerAuthorizationService.IsUserAuthorizedAsync(userId, urlId, userRoles))
+        {
+            return FailureDto.Forbidden("User doesn't authorized to url.");
+        }
+
         var url = await dbContext.Urls
             .Where(u => u.Id == urlId)
             .Select(u => u.ToUrlInfoDto())

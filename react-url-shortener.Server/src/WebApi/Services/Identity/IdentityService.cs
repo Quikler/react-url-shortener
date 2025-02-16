@@ -63,14 +63,15 @@ public class IdentityService(AppDbContext dbContext,
         await dbContext.RefreshTokens.AddAsync(refreshToken);
         await dbContext.SaveChangesAsync();
 
-        return CreateAuthDto(user, refreshToken.Token, tokenProvider.CreateToken(user, roles));
+        return CreateAuthDto(user, refreshToken.Token, tokenProvider.CreateToken(user, roles), [.. roles]);
     }
 
-    private static AuthDto CreateAuthDto(UserEntity user, string refreshToken, string token) => new()
+    private static AuthDto CreateAuthDto(UserEntity user, string refreshToken, string token, string[] roles) => new()
     {
         RefreshToken = refreshToken,
         Token = token,
         User = user.ToUserDto(),
+        Roles = roles,
     };
 
     public async Task<Result<AuthDto, FailureDto>> RefreshTokenAsync(string refreshToken)

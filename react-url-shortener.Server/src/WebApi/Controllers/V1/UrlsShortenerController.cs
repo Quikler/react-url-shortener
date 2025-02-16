@@ -26,7 +26,12 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
     [HttpGet(ApiRoutes.Urls.GetInfo)]
     public async Task<IActionResult> GetInfo([FromRoute] Guid urlId)
     {
-        var result = await urlShortenerService.GetInfoAsync(urlId);
+        if (!HttpContext.TryGetUserId(out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var result = await urlShortenerService.GetInfoAsync(userId, urlId, HttpContext.GetUserRoles());
 
         return result.Match(
             urlInfoDto => Ok(urlInfoDto.ToResponse(RootApiUrl)),
@@ -71,7 +76,7 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
             return Unauthorized();
         }
 
-        var result = await urlShortenerService.DeleteUrlAsync(urlId, userId);
+        var result = await urlShortenerService.DeleteUrlAsync(urlId, userId, HttpContext.GetUserRoles());
 
         return result.Match(
             success => NoContent(),

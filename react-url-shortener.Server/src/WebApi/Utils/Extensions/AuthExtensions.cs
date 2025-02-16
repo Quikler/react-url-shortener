@@ -23,6 +23,12 @@ public static class AuthExtensions
         return true;
     }
 
+    public static string[] GetUserRoles(this ClaimsPrincipal claimsPrincipal)
+        => [.. claimsPrincipal.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)];
+
+    public static string[] GetUserRoles(this HttpContext httpContext)
+        => httpContext.User.GetUserRoles();
+
     public static void SetHttpOnlyRefreshToken(this HttpContext httpContext, string value)
     {
         httpContext.Response.Cookies.Append("refreshToken", value, new CookieOptions

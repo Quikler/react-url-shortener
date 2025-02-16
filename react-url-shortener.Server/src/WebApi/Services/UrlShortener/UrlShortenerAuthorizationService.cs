@@ -11,4 +11,11 @@ public class UrlShortenerAuthorizationService(AppDbContext dbContext) : IUrlShor
             .Where(u => u.Id == urlId)
             .AnyAsync(u => u.UserId == userId);
     }
+
+    public async Task<bool> IsUserAuthorizedAsync(Guid userId, Guid urlId, string[] roles)
+    {
+        bool isOwner = await IsUserOwnsUrlAsync(userId, urlId);
+        bool isAdmin = roles.Contains("Admin");
+        return isOwner || isAdmin;
+    }
 }

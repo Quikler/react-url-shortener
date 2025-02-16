@@ -17,6 +17,7 @@ public static class DtoToApiContract
         {
             Token = authDto.Token,
             User = authDto.User.ToResponse(),
+            Roles = authDto.Roles,
         };
     }
 
