@@ -1,49 +1,35 @@
-const UrlsTable = () => {
+import UrlsTableHeader from "@src/pages/urls/UrlsTableHeader";
+import UrlsTableRow from "@src/pages/urls/UrlsTableRow";
+import { useAuth } from "@src/hooks/useAuth";
+import { UrlResponse } from "@src/models/Url";
+import { Link } from "react-router-dom";
+
+type UrlsTableProps = {
+  urls: UrlResponse[];
+};
+
+const UrlsTable = ({ urls }: UrlsTableProps) => {
+  const { user } = useAuth();
+
   return (
     <table className="rounded-xl">
-      <thead>
-        <tr className="bg-gray-50">
-          <th
-            scope="col"
-            className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-          >
-            Company
-          </th>
-          <th
-            scope="col"
-            className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-          >
-            User ID
-          </th>
-          <th
-            scope="col"
-            className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-          >
-            Type
-          </th>
-          <th
-            scope="col"
-            className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
-          >
-            Industry Type
-          </th>
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-300 ">
-        <tr>
-          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
-            Louis Vuitton
-          </td>
-          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-            20010510
-          </td>
-          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-            Customer
-          </td>
-          <td className="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-            Accessories
-          </td>
-        </tr>
+      <UrlsTableHeader columns={["Id", "Original URL", "Short URL"]} />
+      <tbody className="divide-y-1 divide-black-300">
+        {urls.map((url) => (
+          <UrlsTableRow
+            key={url.id}
+            url={url}
+            columns={["id", "urlOriginal", "urlShortened"]}
+            isHighlighted={user?.id === url.userId}
+            wrapper={(index, content) =>
+              index === 2 ? (
+                <Link to={url.urlShortened} target="_blank" className="px-2 py-1 bg-blue-500 text-white rounded">{content}</Link>
+              ) : (
+                content
+              )
+            }
+          />
+        ))}
       </tbody>
     </table>
   );
