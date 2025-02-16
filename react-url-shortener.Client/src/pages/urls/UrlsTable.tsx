@@ -2,9 +2,13 @@ import UrlsTableHeader from "@src/pages/urls/UrlsTableHeader";
 import UrlsTableRow from "@src/pages/urls/UrlsTableRow";
 import { useAuth } from "@src/hooks/useAuth";
 import { UrlResponse } from "@src/models/Url";
-import { Link } from "react-router-dom";
 import Garbage from "@src/components/svgr/Garbage";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
+import { Roles } from "@src/models/Auth";
+import Modal from "@src/components/ui/Modal";
+import { useState } from "react";
+import Button from "@src/components/ui/Button";
+import ButtonLink from "@src/components/ui/ButtonLink";
 
 type UrlsTableProps = {
   urls: UrlResponse[];
@@ -12,7 +16,10 @@ type UrlsTableProps = {
 };
 
 const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
-  const { user } = useAuth();
+  const { user, hasRole } = useAuth();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUrl, setSelectedUrl] = useState<UrlResponse | null>(null);
 
   const handleDeleteUrl = async (urlId: string) => {
     try {
@@ -23,8 +30,33 @@ const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
     }
   };
 
+  const handleShortUrlClick = (url: UrlResponse) => {
+    setIsModalOpen(true);
+    setSelectedUrl(url);
+  };
+
   return (
     <table className="rounded-xl">
+      <Modal title="Choose an option" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div>
+          <div>
+            <span className="text-xl">Url:</span> {selectedUrl?.urlShortened}
+          </div>
+          <div className="mt-4 flex gap-2">
+            <ButtonLink to={(selectedUrl && selectedUrl?.urlShortened) || "#"} target="_blank">
+              Redirect
+            </ButtonLink>
+            <Button variant="info">Info</Button>
+            <Button
+              onClick={() => navigator.clipboard.writeText(selectedUrl?.urlShortened ?? "#")}
+              variant="secondary"
+            >
+              Copy
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
       <UrlsTableHeader columns={["Id", "Original URL", "Short URL"]} />
       <tbody className="divide-y-1 divide-black-300">
         {urls.map((url) => (
@@ -36,17 +68,19 @@ const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
             wrapper={(index, content) => {
               if (index === 2) {
                 const link = (
-                  <Link
-                    to={url.urlShortened}
-                    target="_blank"
-                    className="px-2 py-1 bg-blue-500 text-white rounded"
+                  <button
+                    //to={url.urlShortened}
+                    //target="_blank"
+                    onClick={() => handleShortUrlClick(url)}
+                    className="px-2 py-1 text-blue-400 hover:text-blue-500 rounded"
                   >
                     {content}
-                  </Link>
+                  </button>
                 );
-                if (url.userId === user?.id) {
+
+                if (url.userId === user?.id || hasRole(Roles.Admin)) {
                   return (
-                    <div className="flex gap-2">
+                    <div className="flex justify-between">
                       {link}
                       <Garbage onClick={() => handleDeleteUrl(url.id)} cursor="pointer" />
                     </div>

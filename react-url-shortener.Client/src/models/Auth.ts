@@ -12,9 +12,14 @@ export interface SignupRequest {
 export interface AuthSuccessResponse {
   token: string;
   user: UserResponse;
+  roles: string[];
 }
 
 export interface UserResponse {
   id: string;
   username: string;
+}
+
+export enum Roles {
+  Admin = "Admin"
 }

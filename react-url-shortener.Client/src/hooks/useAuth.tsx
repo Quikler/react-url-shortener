@@ -17,6 +17,7 @@ interface AuthContextType {
   signupUser: (request: SignupRequest) => Promise<AuthSuccessResponse | undefined>;
   logoutUser: () => Promise<void>;
   isUserLoggedIn: () => boolean;
+  hasRole: (role: string) => boolean;
 }
 
 type AuthProviderProps = { children: React.ReactNode };
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null | undefined>(undefined);
+  const [roles, setRoles] = useState<string[] | null>(null);
   const [isReady, setIsReady] = useState(false);
 
   // Fetch user profile and set token
@@ -38,15 +40,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     })
       .then((data) => {
         if (data) {
-         console.log("DAT", data) 
           setToken(data.token);
           setUser(data.user);
+          setRoles(data.roles);
         }
       })
       .catch((e) => {
         console.log("[Me] Error:", e.message);
         setToken(null);
         setUser(null);
+        setRoles(null);
       });
 
     return () => abortController.abort();
@@ -151,6 +154,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const hasRole = (role: string) => {
+    return roles?.includes(role) || false;
+  };
+
   const value = useMemo(
     () => ({
       token,
@@ -159,6 +166,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       signupUser,
       logoutUser,
       isUserLoggedIn,
+      hasRole,
     }),
     [token, user]
   );
