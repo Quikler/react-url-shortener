@@ -1,3 +1,5 @@
+using WebApi.DTOs.Identity;
+
 namespace WebApi.DTOs.Url;
 
 public class UrlInfoDto
@@ -9,4 +11,6 @@ public class UrlInfoDto
     public required DateTime CreatedAt { get; set; }
 
     public required Guid UserId { get; set; }
+
+    public required UserDto User { get; set; }
 }

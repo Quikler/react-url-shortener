@@ -50,6 +50,7 @@ public static class DtoToApiContract
             CreatedAt = urlInfoDto.CreatedAt,
             UrlShortened = $"{rootApiUrl}/{urlInfoDto.ShortCode}",
             UrlOriginal = urlInfoDto.UrlOriginal,
+            User = urlInfoDto.User.ToResponse(),
         };
     }
 }

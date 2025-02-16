@@ -36,6 +36,7 @@ public static class DomainToDto
             CreatedAt = urlEntity.CreatedAt,
             ShortCode = urlEntity.ShortCode,
             UrlOriginal = urlEntity.UrlOriginal,
+            User = urlEntity.User?.ToUserDto() ?? throw new Exception(),
         };
     }
 }

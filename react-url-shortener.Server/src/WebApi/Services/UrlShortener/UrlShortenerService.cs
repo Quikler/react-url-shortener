@@ -81,6 +81,7 @@ public class UrlShortenerService(AppDbContext dbContext, IUrlShortenerAuthorizat
 
         var url = await dbContext.Urls
             .Where(u => u.Id == urlId)
+            .Include(u => u.User)
             .Select(u => u.ToUrlInfoDto())
             .FirstOrDefaultAsync();
 

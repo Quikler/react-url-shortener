@@ -9,7 +9,7 @@ public static class ApiRoutes
 
     public static class Urls
     {
-        public const string GetInfo = BASE + "/urls/{urlId}/info";
+        public const string GetInfo = BASE + "/urls/{urlId}";
         public const string GetAll = BASE + "/urls";
         public const string Create = BASE + "/urls";
         public const string Delete = BASE + "/urls/{urlId}";
