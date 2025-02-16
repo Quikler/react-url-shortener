@@ -23,8 +23,12 @@ const AddUrlSection = ({ onUrlCreated, className, ...rest }: AddUrlSectionProps)
   });
 
   const handleAddUrlSubmit = handleSubmit(async (data) => {
-    const urlResponse = await UrlsShortenerService.create(data.url);
-    onUrlCreated(urlResponse);
+    try {
+      const urlResponse = await UrlsShortenerService.create(data.url);
+      onUrlCreated(urlResponse);
+    } catch (e: any) {
+      console.error("Unable to create url:", e.message);
+    }
   });
 
   return (

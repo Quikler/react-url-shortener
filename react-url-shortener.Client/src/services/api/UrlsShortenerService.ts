@@ -21,4 +21,13 @@ export abstract class UrlsShortenerService {
       throwIfErrorNotCancelError(e);
     }
   }
+
+  static async delete(urlId: string, config?: AxiosRequestConfig<any> | undefined) {
+    try {
+      const response = await api.delete(`${UrlRoutes.base}/${urlId}`, config);
+      return response.data;
+    } catch (e: any) {
+      throwIfErrorNotCancelError(e);
+    }
+  }
 }
