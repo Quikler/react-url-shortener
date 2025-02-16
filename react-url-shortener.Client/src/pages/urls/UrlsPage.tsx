@@ -3,11 +3,9 @@ import AddUrlSection from "./AddUrlSection";
 import UrlsTable from "./UrlsTable";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 import { UrlResponse } from "@src/models/Url";
-import { useAuth } from "@src/hooks/useAuth";
+import ProtectedComponent from "@src/services/routes/ProtectedComponent";
 
 const UrlsPage = () => {
-  const { isUserLoggedIn } = useAuth();
-
   const [urls, setUrls] = useState<UrlResponse[]>([]);
 
   useEffect(() => {
@@ -41,9 +39,9 @@ const UrlsPage = () => {
     <div className="flex flex-col">
       <div className=" w-full mx-auto inline-block align-middle">
         <div className="flex flex-col gap-6 items-center p-6 my-24 border rounded-lg border-gray-300">
-          {isUserLoggedIn() && (
+          <ProtectedComponent>
             <AddUrlSection className="max-w-2xl" onUrlCreated={hanldeUrlCreated} />
-          )}
+          </ProtectedComponent>
           {urls.length ? (
             <UrlsTable onUrlDeleted={handleUrlDeleted} urls={urls} />
           ) : (
