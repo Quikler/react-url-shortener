@@ -9,12 +9,14 @@ namespace WebApi.IntegrationTests.Abstractions;
 
 public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private readonly string _databaseName = Guid.NewGuid().ToString();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureTestServices(services => 
+        builder.ConfigureTestServices(services =>
         {
             services.Remove(services.Single(s => s.ServiceType == typeof(DbContextOptions<AppDbContext>)));
-            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("urlshort.db"));
+            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase(_databaseName));
         });
     }
 }

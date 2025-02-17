@@ -3,16 +3,35 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApi.IntegrationTests.Abstractions;
 
-public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebApplicationFactory>
+public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebApplicationFactory>, IAsyncLifetime
 {
-    protected HttpClient HttpClient { get; init; }
-    protected AppDbContext DbContext { get; init; }
+    protected HttpClient HttpClient { get; private set; } = null!;
+    protected AppDbContext DbContext { get; private set; } = null!;
+    private IServiceScope? _scope;
 
     protected BaseIntegrationTest(IntegrationTestWebApplicationFactory factory)
     {
-        HttpClient = factory.CreateClient();
+        // HttpClient = factory.CreateClient();
 
-        var scope = factory.Services.CreateScope();
-        DbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        // _scope = factory.Services.CreateScope();
+        // DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    }
+
+    public async Task InitializeAsync()
+    {
+        var newFactory = new IntegrationTestWebApplicationFactory();
+        HttpClient = newFactory.CreateClient();
+        _scope = newFactory.Services.CreateScope();
+        DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        // Ensure the database is created
+        await DbContext.Database.EnsureCreatedAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await DbContext.Database.EnsureDeletedAsync();
+        _scope?.Dispose();
+        HttpClient?.Dispose();
     }
 }

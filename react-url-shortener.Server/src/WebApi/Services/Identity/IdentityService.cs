@@ -46,7 +46,7 @@ public class IdentityService(AppDbContext dbContext,
         }
 
         var isCorrectPassword = await userManager.CheckPasswordAsync(user, loginDto.Password);
-        return isCorrectPassword ? await GenerateAuthDtoForUserAsync(user) : FailureDto.Unauthorized("Invalid username or password");
+        return isCorrectPassword ? await GenerateAuthDtoForUserAsync(user) : FailureDto.Unauthorized("Invalid username or password.");
     }
 
     private async Task<AuthDto> GenerateAuthDtoForUserAsync(UserEntity user)

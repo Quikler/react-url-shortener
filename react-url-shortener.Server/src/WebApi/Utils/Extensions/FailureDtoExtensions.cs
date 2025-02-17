@@ -22,6 +22,6 @@ public static class FailureDtoExtensions
 
         return failureMapping.TryGetValue(failure.FailureCode, out var result)
             ? result
-            : new ObjectResult(failure.ToResponse()) { StatusCode = StatusCodes.Status500InternalServerError };
+            : new ObjectResult(response) { StatusCode = StatusCodes.Status500InternalServerError };
     }
 }
