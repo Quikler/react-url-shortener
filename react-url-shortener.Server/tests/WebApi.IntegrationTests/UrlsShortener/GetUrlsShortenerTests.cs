@@ -16,7 +16,7 @@ public class GetUrlsShortenerTests(IntegrationTestWebApplicationFactory factory)
     public async Task GetAll_WhenUrlsExist_ShouldReturnCollectionWithCorrectNumberOfUrls(int numberOfUrls)
     {
         // Arrange
-        await this.AuthenticateUserAsync(TestUsername, TestPassword);
+        await this.SignupAndAuthenticateUserAsync(TestUsername, TestPassword);
 
         List<UrlResponse> urlResponses = [];
         for (int i = 0; i < numberOfUrls; i++)
@@ -74,7 +74,7 @@ public class GetUrlsShortenerTests(IntegrationTestWebApplicationFactory factory)
     public async Task GetInfo_WhenUrlDoesntExist_ShouldReturnNotFound()
     {
         // Arrange
-        await this.AuthenticateUserAsync(TestUsername, TestPassword);
+        await this.SignupAndAuthenticateUserAsync(TestUsername, TestPassword);
 
         // Act
         var getInfoRoute = ApiRoutes.Urls.GetInfo.Replace("{urlId}", Guid.NewGuid().ToString());

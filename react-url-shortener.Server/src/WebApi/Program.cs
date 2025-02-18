@@ -141,9 +141,15 @@ app.UseAuthorization();
 
 app.UseStaticFiles();
 
-using (var scope = app.Services.CreateAsyncScope())
+using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
+
+    using var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+    if (dbContext.Database.GetPendingMigrations().Any())
+    {
+        dbContext.Database.Migrate();
+    }
 
     await serviceProvider.SeedDefaultRolesAsync();
     await serviceProvider.SeedDefaultAdminAsync();

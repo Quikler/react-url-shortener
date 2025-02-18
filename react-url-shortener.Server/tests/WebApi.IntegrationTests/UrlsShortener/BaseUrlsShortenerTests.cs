@@ -30,13 +30,13 @@ public class BaseUrlsShortenerTests(IntegrationTestWebApplicationFactory factory
 
     protected async Task<UrlResponse> AuthenticateUserCreateAndGetUrlAsync(string username, string password, string url)
     {
-        await this.AuthenticateUserAsync(username, password);
+        await this.SignupAndAuthenticateUserAsync(username, password);
         return await CreateAndGetUrlAsync(url);
     }
 
     protected async Task<HttpResponseMessage> AuthenticateUserAndCreateUrlAsync(string username, string password, string url)
     {
-        await this.AuthenticateUserAsync(username, password);
+        await this.SignupAndAuthenticateUserAsync(username, password);
         return await CreateUrlAsync(url);
     }
 }

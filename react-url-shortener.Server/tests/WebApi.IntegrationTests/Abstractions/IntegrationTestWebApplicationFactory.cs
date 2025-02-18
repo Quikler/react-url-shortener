@@ -9,14 +9,14 @@ namespace WebApi.IntegrationTests.Abstractions;
 
 public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly string _databaseName = Guid.NewGuid().ToString();
+    private readonly string _databaseName = $"Filename={Guid.NewGuid()}.db";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
         {
             services.Remove(services.Single(s => s.ServiceType == typeof(DbContextOptions<AppDbContext>)));
-            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase(_databaseName));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlite(_databaseName));
         });
     }
 }

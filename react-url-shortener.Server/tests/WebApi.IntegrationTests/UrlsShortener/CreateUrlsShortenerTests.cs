@@ -14,7 +14,7 @@ public class CreateUrlsShortenerTests(IntegrationTestWebApplicationFactory facto
     public async Task Create_WhenUrlIsValid_ShouldCreateAndAddUrlToDatabase()
     {
         // Arrange
-        await this.AuthenticateUserAsync(TestUsername, TestPassword);
+        await this.SignupAndAuthenticateUserAsync(TestUsername, TestPassword);
 
         // Act
         var createdUrlResponse = await HttpClient.PostAsync($"{ApiRoutes.Urls.Create}?url={TestUrl}", null);
@@ -37,7 +37,7 @@ public class CreateUrlsShortenerTests(IntegrationTestWebApplicationFactory facto
     public async Task Create_WhenUrlIsInvalid_ShouldFail(string url)
     {
         // Arrange
-        await this.AuthenticateUserAsync(TestUsername, TestPassword);
+        await this.SignupAndAuthenticateUserAsync(TestUsername, TestPassword);
 
         // Act
         var createdUrlResponse = await HttpClient.PostAsync($"{ApiRoutes.Urls.Create}?url={url}", null);
@@ -56,5 +56,18 @@ public class CreateUrlsShortenerTests(IntegrationTestWebApplicationFactory facto
 
         // Assert
         createdUrlResponse.StatusCode.ShouldBe(System.Net.HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task Create_WhenUrlExist_ShouldFail()
+    {
+        // Arrange
+        await AuthenticateUserAndCreateUrlAsync(TestUsername, TestPassword, TestUrl);
+
+        // Act
+        var createdUrlResponse = await HttpClient.PostAsync($"{ApiRoutes.Urls.Create}?url={TestUrl}", null);
+
+        // Assert
+        createdUrlResponse.StatusCode.ShouldBe(System.Net.HttpStatusCode.Conflict);
     }
 }
