@@ -83,33 +83,4 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
             failure => failure.ToActionResult()
         );
     }
-
-    [HttpGet(ApiRoutes.Urls.GetAbout)]
-    public async Task<IActionResult> GetAbout()
-    {
-        try
-        {
-            var about = await System.IO.File.ReadAllTextAsync("about-alg.txt");
-            return Ok(about);
-        }
-        catch
-        {
-            return BadRequest("Cannot get about.");
-        }
-    }
-
-    [Authorize(Roles = "Admin")]
-    [HttpPut(ApiRoutes.Urls.UpdateAbout)]
-    public async Task<IActionResult> UpdateAbout([FromQuery] string about)
-    {
-        try
-        {
-            await System.IO.File.WriteAllTextAsync("about-alg.txt", about);
-            return Ok(about);
-        }
-        catch
-        {
-            return BadRequest("Cannot update about.");
-        }
-    }
 }
