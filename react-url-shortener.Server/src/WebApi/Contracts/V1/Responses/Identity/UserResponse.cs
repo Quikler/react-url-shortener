@@ -1,6 +1,6 @@
 namespace WebApi.Contracts.V1.Responses.Identity;
 
-public class UserResponse
+public record UserResponse
 {
     public required Guid Id { get; set; }
     public required string Username { get; set; }

@@ -74,11 +74,6 @@ public class UrlShortenerService(AppDbContext dbContext, IUrlShortenerAuthorizat
 
     public async Task<Result<UrlInfoDto, FailureDto>> GetInfoAsync(Guid userId, Guid urlId, string[] userRoles)
     {
-        if (!await urlShortenerAuthorizationService.IsUserAuthorizedAsync(userId, urlId, userRoles))
-        {
-            return FailureDto.Forbidden("User doesn't authorized to url.");
-        }
-
         var url = await dbContext.Urls
             .Where(u => u.Id == urlId)
             .Include(u => u.User)

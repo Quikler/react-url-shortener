@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Contracts.V1.Requests.Identity;
 
-public class SignupRequest
+public record SignupRequest
 {
     public required string Username { get; set; }
     

@@ -2,7 +2,7 @@ using WebApi.Contracts.V1.Responses.Identity;
 
 namespace WebApi.Contracts.V1.Responses.Url;
 
-public class UrlInfoResponse
+public record UrlInfoResponse
 {
     public required Guid Id { get; set; }
 

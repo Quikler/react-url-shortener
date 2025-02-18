@@ -9,7 +9,7 @@ namespace WebApi.Mapping;
 
 public static class DtoToApiContract
 {
-    public static FailureResponse ToResponse(this FailureDto failureDto) => new FailureResponse(failureDto.Errors);
+    public static FailureResponse ToResponse(this FailureDto failureDto) => new(failureDto.Errors);
 
     public static AuthResponse ToResponse(this AuthDto authDto)
     {

@@ -1,6 +1,6 @@
 namespace WebApi.Contracts.V1.Responses.Url;
 
-public class UrlResponse
+public record UrlResponse
 {
     public required Guid Id { get; set; }
 
