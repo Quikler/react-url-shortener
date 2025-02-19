@@ -5,7 +5,7 @@ namespace WebApi.IntegrationTests.Abstractions;
 
 public abstract class BaseIntegrationTest(IntegrationTestWebApplicationFactory factory) : IClassFixture<IntegrationTestWebApplicationFactory>, IAsyncLifetime
 {
-    private readonly IntegrationTestWebApplicationFactory _factory = factory;
+    protected IntegrationTestWebApplicationFactory Factory => factory;
 
     public HttpClient HttpClient { get; private set; } = null!;
     public AppDbContext DbContext { get; private set; } = null!;

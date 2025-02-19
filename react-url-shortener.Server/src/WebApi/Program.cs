@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using WebApi.Configurations;
 using WebApi.Filters;
 using WebApi.Providers;
+using WebApi.Services.About;
 using WebApi.Services.Identity;
 using WebApi.Services.UrlShortener;
 
@@ -35,7 +36,9 @@ builder.WebHost.UseUrls("https://localhost:7207");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IAboutService, AboutService>(_ => new AboutService(builder.Environment.WebRootPath));
 builder.Services.AddSingleton<TokenProvider>();
+
 builder.Services.AddScoped<IUrlShortenerService, UrlShortenerService>();
 builder.Services.AddScoped<IUrlShortenerAuthorizationService, UrlShortenerAuthorizationService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();

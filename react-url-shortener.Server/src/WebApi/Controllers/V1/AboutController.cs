@@ -1,37 +1,33 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
+using WebApi.Services.About;
+using WebApi.Utils.Extensions;
 
 namespace WebApi.Controllers.V1;
 
-public class AboutController : BaseApiController
+public class AboutController(IAboutService aboutService) : BaseApiController
 {
     [HttpGet(ApiRoutes.About.Get)]
     public async Task<IActionResult> GetAbout()
     {
-        try
-        {
-            var about = await System.IO.File.ReadAllTextAsync("about-alg.txt");
-            return Ok(about);
-        }
-        catch
-        {
-            return BadRequest("Cannot get about.");
-        }
+        var result = await aboutService.GetAboutAsync();
+
+        return result.Match(
+            Ok,
+            failure => failure.ToActionResult()
+        );
     }
 
     [Authorize(Roles = "Admin")]
     [HttpPut(ApiRoutes.About.Update)]
-    public async Task<IActionResult> UpdateAbout([FromQuery] string about)
+    public async Task<IActionResult> UpdateAbout([FromQuery] string newAbout)
     {
-        try
-        {
-            await System.IO.File.WriteAllTextAsync("about-alg.txt", about);
-            return Ok(about);
-        }
-        catch
-        {
-            return BadRequest("Cannot update about.");
-        }
+        var result = await aboutService.UpdateAboutAsync(newAbout);
+
+        return result.Match(
+            Ok,
+            failure => failure.ToActionResult()
+        );
     }
 }
