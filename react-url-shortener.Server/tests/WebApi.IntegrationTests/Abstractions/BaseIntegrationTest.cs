@@ -11,7 +11,7 @@ public abstract class BaseIntegrationTest(IntegrationTestWebApplicationFactory f
     public AppDbContext DbContext { get; private set; } = null!;
     private IServiceScope? _scope;
 
-    public async Task InitializeAsync()
+    public virtual async Task InitializeAsync()
     {
         var newFactory = new IntegrationTestWebApplicationFactory();
         // Change default http://localhost to HTTPS version TO PREVENT REDIRECTION from HTTP to HTTPS
@@ -24,7 +24,7 @@ public abstract class BaseIntegrationTest(IntegrationTestWebApplicationFactory f
         await DbContext.Database.EnsureCreatedAsync();
     }
 
-    public async Task DisposeAsync()
+    public virtual async Task DisposeAsync()
     {
         await DbContext.Database.EnsureDeletedAsync();
         _scope?.Dispose();
