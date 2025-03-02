@@ -1,4 +1,4 @@
-import ProtectedComponent from "@src/services/routes/ProtectedComponent";
+import AuthComponent from "@src/services/routes/AuthComponent";
 import AddUrlSection from "./AddUrlSection";
 import UrlsTable from "./UrlsTable";
 import { UrlResponse } from "@src/models/Url";
@@ -37,9 +37,9 @@ const UrlsMain = () => {
 
   return (
     <>
-      <ProtectedComponent>
+      <AuthComponent>
         <AddUrlSection className="max-w-2xl" onUrlCreated={hanldeUrlCreated} />
-      </ProtectedComponent>
+      </AuthComponent>
       {urls.length ? (
         <UrlsTable onUrlDeleted={handleUrlDeleted} urls={urls} />
       ) : (

@@ -3,10 +3,10 @@ import React from "react";
 
 type Props = { children: React.ReactNode };
 
-const ProtectedComponent = ({ children }: Props) => {
+const AuthComponent = ({ children }: Props) => {
   const { isUserLoggedIn } = useAuth();
 
   return isUserLoggedIn() && children;
 };
 
-export default ProtectedComponent;
+export default AuthComponent;
