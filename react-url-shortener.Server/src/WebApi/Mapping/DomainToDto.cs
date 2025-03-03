@@ -1,4 +1,5 @@
 using DAL.Entities;
+using WebApi.DTOs;
 using WebApi.DTOs.Identity;
 using WebApi.DTOs.Url;
 
@@ -37,6 +38,17 @@ public static class DomainToDto
             ShortCode = urlEntity.ShortCode,
             UrlOriginal = urlEntity.UrlOriginal,
             User = urlEntity.User?.ToUserDto() ?? throw new Exception(),
+        };
+    }
+
+    public static PaginationDto<TResult> ToPagination<T, TResult>(this IEnumerable<T> collection, Func<T, TResult> itemsSelect, int totalRecords, int pageNumber, int pageSize)
+    {
+        return new PaginationDto<TResult>
+        {
+            TotalCount = totalRecords,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            Items = collection.Select(itemsSelect)
         };
     }
 }

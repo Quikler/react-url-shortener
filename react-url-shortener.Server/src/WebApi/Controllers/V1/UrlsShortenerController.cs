@@ -12,12 +12,12 @@ namespace WebApi.Controllers.V1;
 public class UrlsShortenerController(IUrlShortenerService urlShortenerService) : BaseApiController
 {
     [HttpGet(ApiRoutes.Urls.GetAll)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
-        var result = await urlShortenerService.GetAllAsync();
+        var result = await urlShortenerService.GetAllAsync(pageNumber, pageSize);
 
         return result.Match(
-            urlDtos => Ok(urlDtos.Select(u => u.ToResponse(RootApiUrl))),
+            urlsDtoPagination => Ok(urlsDtoPagination.ToResponse(u => u.ToResponse(RootApiUrl))),
             failure => failure.ToActionResult()
         );
     }
@@ -26,12 +26,7 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
     [HttpGet(ApiRoutes.Urls.GetInfo)]
     public async Task<IActionResult> GetInfo([FromRoute] Guid urlId)
     {
-        if (!HttpContext.TryGetUserId(out var userId))
-        {
-            return Unauthorized();
-        }
-
-        var result = await urlShortenerService.GetInfoAsync(userId, urlId, HttpContext.GetUserRoles());
+        var result = await urlShortenerService.GetInfoAsync(urlId);
 
         return result.Match(
             urlInfoDto => Ok(urlInfoDto.ToResponse(RootApiUrl)),

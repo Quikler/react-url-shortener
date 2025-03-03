@@ -53,4 +53,15 @@ public static class DtoToApiContract
             User = urlInfoDto.User.ToResponse(),
         };
     }
+
+    public static PaginationResponse<TResult> ToResponse<T, TResult>(this PaginationDto<T> paginationDto, Func<T, TResult> itemsSelect)
+    {
+        return new PaginationResponse<TResult>
+        {
+            TotalCount = paginationDto.TotalCount,
+            PageNumber = paginationDto.PageNumber,
+            PageSize = paginationDto.PageSize,
+            Items = paginationDto.Items.Select(itemsSelect),
+        };
+    }
 }

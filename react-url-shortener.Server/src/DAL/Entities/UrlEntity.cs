@@ -7,5 +7,5 @@ public class UrlEntity : BaseEntity
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public required Guid UserId { get; set; }
-    public UserEntity? User { get; set; }
+    public UserEntity User { get; set; } = null!;
 }

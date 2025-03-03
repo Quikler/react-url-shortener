@@ -9,8 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 using WebApi.Configurations;
 using WebApi.Filters;
 using WebApi.Providers;
+using WebApi.Repositories.Url;
 using WebApi.Services.About;
 using WebApi.Services.Identity;
+using WebApi.Services.Unit;
 using WebApi.Services.UrlShortener;
 
 const string CORS_POLICY = "MY_CORS";
@@ -36,17 +38,20 @@ builder.WebHost.UseUrls("https://localhost:7207");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IAboutService, AboutService>(_ => new AboutService(builder.Environment.WebRootPath));
 builder.Services.AddSingleton<TokenProvider>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUrlRepository, UrlRepository>();
+builder.Services.AddScoped<IAboutService, AboutService>(_ => new AboutService(builder.Environment.WebRootPath));
 builder.Services.AddScoped<IUrlShortenerService, UrlShortenerService>();
-builder.Services.AddScoped<IUrlShortenerAuthorizationService, UrlShortenerAuthorizationService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidateModelStateFilter>();
 });
+
+builder.Services.AddMemoryCache();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
