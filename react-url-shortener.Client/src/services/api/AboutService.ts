@@ -14,7 +14,7 @@ export abstract class AboutService {
 
   public static async updateAbout(newAbout: string, config?: AxiosRequestConfig<any> | undefined) {
     try {
-      const response = await api.put(`/about?newAbout=${newAbout}`, null, config);
+      const response = await api.put(`/about?newAbout=${encodeURIComponent(newAbout)}`, null, config);
       return response.data;
     } catch (e: any) {
       throwIfErrorNotCancelError(e);

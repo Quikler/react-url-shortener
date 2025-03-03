@@ -6,7 +6,6 @@ import { useEffect, useReducer, useRef } from "react";
 type AboutState = {
   about: string;
   buttonText: "Edit" | "Submit";
-  //buttonClick: () => void;
   isAboutEditable: boolean;
 };
 
@@ -39,8 +38,6 @@ const AboutPage = () => {
   });
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const codeRef = useRef<HTMLPreElement | null>(null);
-
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "auto";
@@ -84,18 +81,12 @@ const AboutPage = () => {
         <p className="text-2xl font-medium">About algorithm:</p>
         <div className="flex flex-col gap-2">
           <div className="w-2xl p-4 border border-black">
-            {about.isAboutEditable ? (
-              <textarea
-                ref={textAreaRef}
-                className="w-full min-h-full p-2 border-0 outline-0 border-gray-300"
-                value={about.about}
-                onChange={(e) => aboutDispatch({ type: "SET_ABOUT", payload: e.target.value })}
-              />
-            ) : (
-              <code ref={codeRef} className="whitespace-pre-wrap">
-                {about.about}
-              </code>
-            )}
+            <textarea readOnly={!about.isAboutEditable}
+              ref={textAreaRef}
+              className="w-full min-h-full p-2 border-0 whitespace-pre-wrap outline-0 border-gray-300"
+              value={about.about}
+              onChange={(e) => aboutDispatch({ type: "SET_ABOUT", payload: e.target.value })}
+            />
           </div>
           <AdminComponent>
             <Button onClick={buttonClickHandler} className="self-start">
