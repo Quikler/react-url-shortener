@@ -94,8 +94,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             if (e.name !== "CanceledError") {
               console.log("[Interceptor][Response]: Token not refreshed");
 
-              setToken(null);
-              setUser(null);
+              // setRoles(null);
+              // setToken(null);
+              // setUser(null);
             }
           }
         }
@@ -121,6 +122,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (data) {
         setToken(data.token);
         setUser(data.user);
+        setRoles(data.roles);
       }
       return data;
     } catch (e: any) {
@@ -134,6 +136,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (data) {
         setToken(data.token);
         setUser(data.user);
+        setRoles(data.roles);
       }
       return data;
     } catch (e: any) {
@@ -148,6 +151,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await AuthService.logout();
       setUser(null);
       setToken(null);
+      setRoles(null);
       navigate("/");
     } catch (e: any) {
       console.error("Unable to logout:", e.message);
@@ -168,7 +172,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       isUserLoggedIn,
       hasRole,
     }),
-    [token, user]
+    [token, user, roles]
   );
 
   // Render children only when the app is ready

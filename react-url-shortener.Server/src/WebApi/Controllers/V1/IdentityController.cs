@@ -41,10 +41,9 @@ public class IdentityController(IIdentityService identityService) : ControllerBa
     }
 
     [HttpPost(ApiRoutes.Identity.Logout)]
-    public async Task<IActionResult> Logout()
+    public IActionResult Logout()
     {
-        //HttpContext.Response.Cookies.Delete("refreshToken");
-        await HttpContext.SignOutAsync();
+        HttpContext.Response.Cookies.Delete("refreshToken");
         return NoContent();
     }
 
