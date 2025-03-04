@@ -1,4 +1,4 @@
-import AuthComponent from "@src/services/routes/AuthComponent";
+import AuthComponent from "@src/components/HOC/AuthComponent";
 import AddUrlSection from "./AddUrlSection";
 import UrlsTable from "./UrlsTable";
 import { UrlResponse } from "@src/models/Url";
@@ -15,7 +15,7 @@ const UrlsMain = () => {
       try {
         const data = await UrlsShortenerService.getAll({ signal: abortController.signal });
         if (data) {
-          setUrls(data);
+          setUrls(data.items);
         }
       } catch (e: any) {
         console.error("Unable to fetch urls:", e.message);

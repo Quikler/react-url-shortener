@@ -8,6 +8,7 @@ import UrlsMain from "@src/pages/urls/UrlsMain";
 import UrlsPage from "@src/pages/urls/UrlsPage";
 import UrlInfoPage from "@src/pages/urls/{urlId}/UrlInfoPage";
 import { createBrowserRouter } from "react-router-dom";
+import AuthRoute from "./AuthRoute";
 
 export const router = createBrowserRouter([
   {
@@ -30,7 +31,11 @@ export const router = createBrowserRouter([
           },
           {
             path: ":urlId/info",
-            element: <UrlInfoPage />,
+            element: (
+              <AuthRoute>
+                <UrlInfoPage />
+              </AuthRoute>
+            ),
           },
         ],
       },
@@ -39,7 +44,14 @@ export const router = createBrowserRouter([
         element: <UrlsPage />,
         children: [
           { path: "", index: true, element: <UrlsMain /> },
-          { path: ":urlId/info", element: <UrlInfoPage /> },
+          {
+            path: ":urlId/info",
+            element: (
+              <AuthRoute>
+                <UrlInfoPage />
+              </AuthRoute>
+            ),
+          },
         ],
       },
       {

@@ -6,8 +6,7 @@ type AdminComponentProps = {
 
 const AdminComponent = ({ children }: AdminComponentProps) => {
   const { hasRole } = useAuth();
-
-  return <>{hasRole("Admin") && children}</>;
+  return hasRole("Admin") && children;
 };
 
 export default AdminComponent;

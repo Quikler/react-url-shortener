@@ -1,6 +1,6 @@
 import Button from "@src/components/ui/Button";
 import { AboutService } from "@src/services/api/AboutService";
-import AdminComponent from "@src/services/routes/AdminComponent";
+import AdminComponent from "@src/components/HOC/AdminComponent";
 import { useEffect, useReducer, useRef } from "react";
 
 type AboutState = {
@@ -77,14 +77,15 @@ const AboutPage = () => {
 
   return (
     <div className="min-h-screen py-24">
-      <div className=" mx-auto flex gap-4 flex-col items-center justify-center">
-        <p className="text-2xl font-medium">About algorithm:</p>
+      <div className="mx-auto flex gap-4 flex-col items-center justify-center">
+        <p className="text-2xl font-medium">Url shortener algorithm:</p>
         <div className="flex flex-col gap-2">
-          <div className="w-2xl p-4 border border-black">
-            <textarea readOnly={!about.isAboutEditable}
+          <div className="w-2xl p-8 bg-white shadow rounded-2xl border-black">
+            <textarea
+              readOnly={!about.isAboutEditable}
               ref={textAreaRef}
-              className="w-full min-h-full p-2 border-0 whitespace-pre-wrap outline-0 border-gray-300"
-              value={about.about}
+              className="w-full resize-none min-h-full border-0 whitespace-pre-wrap outline-0 border-gray-300"
+              value={about.about ? about.about : "SORRY... no algorithm presented :("}
               onChange={(e) => aboutDispatch({ type: "SET_ABOUT", payload: e.target.value })}
             />
           </div>

@@ -1,11 +1,10 @@
 import { useAuth } from "@src/hooks/useAuth";
 import React from "react";
 
-type Props = { children: React.ReactNode };
+type AuthComponentProps = { children: React.ReactNode };
 
-const AuthComponent = ({ children }: Props) => {
+const AuthComponent = ({ children }: AuthComponentProps) => {
   const { isUserLoggedIn } = useAuth();
-
   return isUserLoggedIn() && children;
 };
 
