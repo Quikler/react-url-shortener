@@ -9,6 +9,7 @@ import UrlsPage from "@src/pages/urls/UrlsPage";
 import UrlInfoPage from "@src/pages/urls/{urlId}/UrlInfoPage";
 import { createBrowserRouter } from "react-router-dom";
 import AuthRoute from "./AuthRoute";
+import { ToastContextProvider } from "@src/hooks/useToast";
 
 export const router = createBrowserRouter([
   {
@@ -16,7 +17,9 @@ export const router = createBrowserRouter([
     element: (
       <AuthProvider>
         <MainLayout>
-          <App />
+          <ToastContextProvider>
+            <App />
+          </ToastContextProvider>
         </MainLayout>
       </AuthProvider>
     ),

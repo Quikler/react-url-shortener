@@ -2,6 +2,8 @@ import Button from "@src/components/ui/Button";
 import { AboutService } from "@src/services/api/AboutService";
 import AdminComponent from "@src/components/HOC/AdminComponent";
 import { useEffect, useReducer, useRef } from "react";
+import { useToast } from "@src/hooks/useToast";
+import { handleError } from "@src/utils/helpers";
 
 type AboutState = {
   about: string;
@@ -31,6 +33,7 @@ const aboutReducer = (state: AboutState, action: AboutAction): AboutState => {
 };
 
 const AboutPage = () => {
+  const { danger, success } = useToast();
   const [about, aboutDispatch] = useReducer(aboutReducer, {
     about: "",
     buttonText: "Edit",
@@ -53,7 +56,7 @@ const AboutPage = () => {
         const data = await AboutService.getAbout({ signal: abortController.signal });
         aboutDispatch({ type: "SET_ABOUT", payload: data });
       } catch (e: any) {
-        console.error("Cannot get about:", e.message);
+        handleError(e, danger);
       }
     };
 
@@ -68,8 +71,9 @@ const AboutPage = () => {
     try {
       const newAbout = await AboutService.updateAbout(about.about);
       aboutDispatch({ type: "EDIT", payload: newAbout });
+      success("Url shortener algorithm updated successfully");
     } catch (e: any) {
-      console.error("Cannot update about:", e.message);
+      handleError(e, danger);
     }
   };
 

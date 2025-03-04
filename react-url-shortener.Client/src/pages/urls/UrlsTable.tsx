@@ -9,6 +9,8 @@ import Modal from "@src/components/ui/Modal";
 import { useState } from "react";
 import Button from "@src/components/ui/Button";
 import ButtonLink from "@src/components/ui/ButtonLink";
+import { Link } from "react-router-dom";
+import { useToast } from "@src/hooks/useToast";
 
 type UrlsTableProps = {
   urls: UrlResponse[];
@@ -17,6 +19,7 @@ type UrlsTableProps = {
 
 const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
   const { user, hasRole, isUserLoggedIn } = useAuth();
+  const { success } = useToast();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUrl, setSelectedUrl] = useState<UrlResponse | null>(null);
@@ -25,6 +28,7 @@ const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
     try {
       await UrlsShortenerService.delete(urlId);
       onUrlDeleted(urlId);
+      success("Url deleted successfully");
     } catch (e: any) {
       console.error("Unable to delete url:", e.message);
     }
@@ -60,10 +64,10 @@ const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
           </div>
         </div>
       </Modal>
-      <div className="w-2xl p-8 bg-white shadow rounded-2xl border-black">
-        <table>
+      <div className="bg-white shadow rounded-2xl border-black">
+        <table className="w-full border-separate">
           <UrlsTableHeader columns={["Id", "Original URL", "Short URL"]} />
-          <tbody className="divide-y-1 divide-black-300">
+          <tbody className="divide-y-1">
             {urls.map((url) => (
               <UrlsTableRow
                 key={url.id}
@@ -71,27 +75,43 @@ const UrlsTable = ({ urls, onUrlDeleted }: UrlsTableProps) => {
                 columns={["id", "urlOriginal", "urlShortened"]}
                 isHighlighted={user?.id === url.userId}
                 wrapper={(index, content) => {
+                  if (index === 0) {
+                    return <div className="whitespace-nowrap">{content}</div>;
+                  }
+
+                  if (index === 1) {
+                    return (
+                      <Link
+                        to={url.urlOriginal}
+                        className="px-2 py-1 text-blue-400 hover:text-blue-500 rounded"
+                      >
+                        {content}
+                      </Link>
+                    );
+                  }
+
                   if (index === 2) {
                     const link = (
                       <button
                         onClick={() => handleShortUrlClick(url)}
-                        className="px-2 py-1 text-blue-400 hover:text-blue-500 rounded"
+                        className="px-2 py-1 whitespace-nowrap cursor-pointer text-blue-400 hover:text-blue-500 rounded"
                       >
                         {content}
                       </button>
                     );
 
-                    if (url.userId === user?.id || hasRole(Roles.Admin)) {
-                      return (
-                        <div className="flex justify-between">
-                          {link}
+                    return (
+                      <div className="flex justify-between">
+                        {link}
+                        {url.userId === user?.id || hasRole(Roles.Admin) ? (
                           <Garbage onClick={() => handleDeleteUrl(url.id)} cursor="pointer" />
-                        </div>
-                      );
-                    }
-
-                    return <div className="flex justify-between">{link}</div>;
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    );
                   }
+
                   return content;
                 }}
               />

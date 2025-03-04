@@ -4,12 +4,12 @@ type UrlsTableHeaderProps = {
 
 const UrlsTableHeader = ({ columns }: UrlsTableHeaderProps) => (
   <thead>
-    <tr className="bg-gray-50">
-      {columns.map((column) => (
+    <tr>
+      {columns.map((column, index) => (
         <th
-          key={column}
+          key={index}
           scope="col"
-          className="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"
+          className={`p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize`}
         >
           {column}
         </th>

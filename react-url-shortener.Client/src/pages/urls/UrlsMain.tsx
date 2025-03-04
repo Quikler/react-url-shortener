@@ -38,7 +38,7 @@ const UrlsMain = () => {
   return (
     <>
       <AuthComponent>
-        <AddUrlSection className="max-w-2xl" onUrlCreated={hanldeUrlCreated} />
+        <AddUrlSection onUrlCreated={hanldeUrlCreated} />
       </AuthComponent>
       {urls.length ? (
         <UrlsTable onUrlDeleted={handleUrlDeleted} urls={urls} />

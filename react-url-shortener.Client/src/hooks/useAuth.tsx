@@ -4,6 +4,7 @@ import api from "@services/axios/instance";
 import { AuthSuccessResponse, LoginRequest, SignupRequest } from "@src/models/Auth";
 import { AuthRoutes } from "@src/services/api/ApiRoutes";
 import { AuthService } from "@src/services/api/AuthService";
+import { throwIfErrorNotCancelError } from "@src/utils/helpers";
 
 export type UserProfile = {
   id: string;
@@ -126,7 +127,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       return data;
     } catch (e: any) {
-      console.error("Unable to signup:", e.message);
+      throwIfErrorNotCancelError(e);
     }
   };
 
@@ -140,7 +141,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       return data;
     } catch (e: any) {
-      console.error("Unable to login:", e.message);
+      throwIfErrorNotCancelError(e);
     }
   };
 
@@ -154,7 +155,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setRoles(null);
       navigate("/");
     } catch (e: any) {
-      console.error("Unable to logout:", e.message);
+      throwIfErrorNotCancelError(e);
     }
   };
 

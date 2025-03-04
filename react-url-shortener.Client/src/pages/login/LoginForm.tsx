@@ -5,9 +5,12 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@src/components/ui/ErrorMessage";
 import { useAuth } from "@src/hooks/useAuth";
+import { handleError } from "@src/utils/helpers";
+import { useToast } from "@src/hooks/useToast";
 
 const LoginForm = () => {
   const { loginUser } = useAuth();
+  const { danger, success } = useToast();
 
   const {
     register,
@@ -22,7 +25,12 @@ const LoginForm = () => {
   });
 
   const handleFormSubmit = handleSubmit(async (data) => {
-    await loginUser(data);
+    try {
+      await loginUser(data);
+      success("Login successfully");
+    } catch (e: any) {
+      handleError(e, danger);
+    }
   });
 
   return (
