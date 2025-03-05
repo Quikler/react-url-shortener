@@ -32,22 +32,38 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
 
     public async Task<PaginationDto<UrlDto>> GetAllUrlDtoAsync(int pageNumber, int pageSize)
     {
-        PaginationDto<UrlDto>? urls = await _memoryCache.GetOrCreateAsync(CacheKeys.Urls, async entry =>
-        {
-            entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+        var query = _dbContext.Urls.AsNoTracking();
 
-            var count = await _dbContext.Urls.CountAsync();
-            var urls = await _dbContext.Urls
-                .AsNoTracking()
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(UrlEntityProjection.UrlDto)
-                .ToListAsync();
+        var totalCount = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-            return urls.ToPagination(u => u, count, pageNumber, pageSize);
-        });
+        var urls = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(UrlEntityProjection.UrlDto)
+            .ToListAsync();
 
-        return urls ?? PaginationDto<UrlDto>.Empty;
+        return urls.ToPagination(u => u, totalCount, totalPages, pageNumber, pageSize);
+
+        // PaginationDto<UrlDto>? urls = await _memoryCache.GetOrCreateAsync(CacheKeys.Urls, async entry =>
+        // {
+        //     entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+
+        //     var query = _dbContext.Urls.AsNoTracking();
+
+        //     var totalCount = await query.CountAsync();
+        //     var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+        //     var urls = await query
+        //         .Skip((pageNumber - 1) * pageSize)
+        //         .Take(pageSize)
+        //         .Select(UrlEntityProjection.UrlDto)
+        //         .ToListAsync();
+
+        //     return urls.ToPagination(u => u, totalCount, totalPages, pageNumber, pageSize);
+        // });
+
+        // return urls ?? PaginationDto<UrlDto>.Empty;
     }
 
     public async Task<UrlInfoDto?> GetUrlInfoDtoAsync(Guid urlId)

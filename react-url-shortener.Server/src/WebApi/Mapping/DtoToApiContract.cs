@@ -59,6 +59,7 @@ public static class DtoToApiContract
         return new PaginationResponse<TResult>
         {
             TotalCount = paginationDto.TotalCount,
+            TotalPages = paginationDto.TotalPages,
             PageNumber = paginationDto.PageNumber,
             PageSize = paginationDto.PageSize,
             Items = paginationDto.Items.Select(itemsSelect),
