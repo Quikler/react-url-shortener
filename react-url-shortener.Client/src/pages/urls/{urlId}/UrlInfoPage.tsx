@@ -1,4 +1,4 @@
-import { UrlInfoResponse } from "@src/models/Url";
+import { UrlInfoResponse } from "@src/services/api/models/Url";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -29,15 +29,14 @@ const UrlInfoPage = () => {
   }, [urlId]);
 
   return (
-    <div className="bg-slate-300 w-full">
-      <div className="flex items-center gap-3 text-2xl flex-col">
-        <p className="text-4xl break-all">Info about url: {urlInfo?.urlOriginal}</p>
-        <p className="break-all">Shortened version: {urlInfo?.urlShortened}</p>
-        <p className="break-all">Url id: {urlInfo?.id}</p>
-        <p className="break-all">Creation time: {new Date(urlInfo?.createdAt!).toLocaleString()}</p>
-        <p className="break-all">Creator id: {urlInfo?.user.id}</p>
-        <p className="break-all">Created by: {urlInfo?.user.username}</p>
-      </div>
+    <div className="p-8 bg-white shadow rounded-2xl border-black flex flex-col gap-3 items-center">
+      <p className="text-4xl">Info about url</p>
+      <p className="text-2xl break-words">Original url: {urlInfo?.urlOriginal}</p>
+      <p className="text-2xl break-words">Shortened version: {urlInfo?.urlShortened}</p>
+      <p className="break-words">Url id: {urlInfo?.id}</p>
+      <p className="break-words">Creation time: {new Date(urlInfo?.createdAt!).toLocaleString()}</p>
+      <p className="break-words">Creator id: {urlInfo?.user.id}</p>
+      <p className="break-words text-xl">Created by: {urlInfo?.user.username}</p>
     </div>
   );
 };

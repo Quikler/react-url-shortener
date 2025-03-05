@@ -1,11 +1,11 @@
 import Garbage from "@src/components/svgr/Garbage";
-import { Roles } from "@src/models/Auth";
+import { Roles } from "@src/services/api/models/Auth";
 import { Link } from "react-router-dom";
 import UrlsTableHeader from "./UrlsTableHeader";
 import UrlsTableRow from "./UrlsTableRow";
 import { useUrls } from "./UrlsContext";
 import { useAuth } from "@src/hooks/useAuth";
-import { UrlResponse } from "@src/models/Url";
+import { UrlResponse } from "@src/services/api/models/Url";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 import { handleError } from "@src/utils/helpers";
 import { useToast } from "@src/hooks/useToast";

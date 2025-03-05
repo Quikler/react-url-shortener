@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@services/axios/instance";
-import { AuthSuccessResponse, LoginRequest, SignupRequest } from "@src/models/Auth";
+import { AuthSuccessResponse, LoginRequest, SignupRequest } from "@src/services/api/models/Auth";
 import { AuthRoutes } from "@src/services/api/ApiRoutes";
 import { AuthService } from "@src/services/api/AuthService";
 import { throwIfErrorNotCancelError } from "@src/utils/helpers";

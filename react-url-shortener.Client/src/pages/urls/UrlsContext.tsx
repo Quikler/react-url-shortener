@@ -1,4 +1,4 @@
-import { UrlResponse } from "@src/models/Url";
+import { UrlResponse } from "@src/services/api/models/Url";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 

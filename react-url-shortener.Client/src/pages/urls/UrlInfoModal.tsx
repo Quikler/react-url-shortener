@@ -2,7 +2,7 @@ import Button from "@src/components/ui/Button";
 import ButtonLink from "@src/components/ui/ButtonLink";
 import Modal from "@src/components/ui/Modal";
 import { useAuth } from "@src/hooks/useAuth";
-import { UrlResponse } from "@src/models/Url";
+import { UrlResponse } from "@src/services/api/models/Url";
 
 type UrlInfoModalProps = {
   isModalOpen: boolean;

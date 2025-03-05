@@ -1,4 +1,4 @@
-import { UrlResponse } from "@src/models/Url";
+import { UrlResponse } from "@src/services/api/models/Url";
 
 type UrlsTableRowProps = {
   url: UrlResponse;

@@ -1,4 +1,4 @@
-import { UrlResponse } from "@src/models/Url";
+import { UrlResponse } from "@src/services/api/models/Url";
 import { useState } from "react";
 import UrlInfoModal from "./UrlInfoModal";
 import UrlsTable from "./UrlsTable";

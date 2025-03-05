@@ -3,7 +3,7 @@ import {
   AuthSuccessResponse,
   LoginRequest,
   SignupRequest,
-} from "@src/models/Auth";
+} from "@src/services/api/models/Auth";
 import { AxiosRequestConfig } from "axios";
 import { throwIfErrorNotCancelError } from "@src/utils/helpers";
 import { AuthRoutes } from "./ApiRoutes";

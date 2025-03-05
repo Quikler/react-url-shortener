@@ -2,7 +2,7 @@ import { throwIfErrorNotCancelError } from "@src/utils/helpers";
 import { AxiosRequestConfig } from "axios";
 import api from "@services/axios/instance";
 import { UrlRoutes } from "./ApiRoutes";
-import { UrlResponse } from "@src/models/Url";
+import { UrlResponse } from "@src/services/api/models/Url";
 
 export abstract class UrlsShortenerService {
   static async getAll(config?: AxiosRequestConfig<any> | undefined) {
