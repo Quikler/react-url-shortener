@@ -26,7 +26,7 @@ const AddUrlSection = ({ className, ...rest }: AddUrlSectionProps) => {
 
   const handleAddUrlSubmit = handleSubmit(async (data) => {
     try {
-      createUrl(data.url);
+      await createUrl(data.url);
       success("Url created successfully");
     } catch (e: any) {
       handleError(e, danger);

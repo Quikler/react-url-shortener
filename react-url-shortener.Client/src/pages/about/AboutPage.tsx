@@ -1,9 +1,10 @@
 import Button from "@src/components/ui/Button";
 import { AboutService } from "@src/services/api/AboutService";
 import AdminComponent from "@src/components/HOC/AdminComponent";
-import { useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { useToast } from "@src/hooks/useToast";
 import { handleError } from "@src/utils/helpers";
+import LoadingScreen from "@src/components/ui/LoadingScreen";
 
 type AboutState = {
   about: string;
@@ -33,6 +34,8 @@ const aboutReducer = (state: AboutState, action: AboutAction): AboutState => {
 };
 
 const AboutPage = () => {
+  const [loading, setLoading] = useState(true);
+
   const { danger, success } = useToast();
   const [about, aboutDispatch] = useReducer(aboutReducer, {
     about: "",
@@ -46,7 +49,7 @@ const AboutPage = () => {
       textAreaRef.current.style.height = "auto";
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
-  }, [about.about, about.isAboutEditable]);
+  }, [about.about]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -57,6 +60,8 @@ const AboutPage = () => {
         aboutDispatch({ type: "SET_ABOUT", payload: data });
       } catch (e: any) {
         handleError(e, danger);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -78,6 +83,8 @@ const AboutPage = () => {
   };
 
   const buttonClickHandler = about.buttonText === "Edit" ? handleEditClick : handleSubmitClick;
+
+  if (loading) return <LoadingScreen />;
 
   return (
     <div className="min-h-screen py-24">
