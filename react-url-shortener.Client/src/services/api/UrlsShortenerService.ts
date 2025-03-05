@@ -2,6 +2,7 @@ import { throwIfErrorNotCancelError } from "@src/utils/helpers";
 import { AxiosRequestConfig } from "axios";
 import api from "@services/axios/instance";
 import { UrlRoutes } from "./ApiRoutes";
+import { UrlResponse } from "@src/models/Url";
 
 export abstract class UrlsShortenerService {
   static async getAll(config?: AxiosRequestConfig<any> | undefined) {
@@ -22,7 +23,7 @@ export abstract class UrlsShortenerService {
     }
   }
 
-  static async create(url: string, config?: AxiosRequestConfig<any> | undefined) {
+  static async create(url: string, config?: AxiosRequestConfig<any> | undefined): Promise<UrlResponse | undefined> {
     try {
       const response = await api.post(`${UrlRoutes.base}?url=${url}`, {}, config);
       return response.data;
