@@ -5,9 +5,16 @@ import { UrlRoutes } from "./ApiRoutes";
 import { UrlResponse } from "@src/services/api/models/Url";
 
 export abstract class UrlsShortenerService {
-  static async getAll(config?: AxiosRequestConfig<any> | undefined) {
+  static async getAll(
+    pageNumber: number = 5,
+    pageSize: number = 5,
+    config?: AxiosRequestConfig<any> | undefined
+  ) {
     try {
-      const response = await api.get(UrlRoutes.base, config);
+      const response = await api.get(
+        `${UrlRoutes.base}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+        config
+      );
       return response.data;
     } catch (e: any) {
       throwIfErrorNotCancelError(e);
@@ -23,7 +30,10 @@ export abstract class UrlsShortenerService {
     }
   }
 
-  static async create(url: string, config?: AxiosRequestConfig<any> | undefined): Promise<UrlResponse | undefined> {
+  static async create(
+    url: string,
+    config?: AxiosRequestConfig<any> | undefined
+  ): Promise<UrlResponse | undefined> {
     try {
       const response = await api.post(`${UrlRoutes.base}?url=${url}`, {}, config);
       return response.data;

@@ -23,7 +23,7 @@ const ButtonLink = ({ variant = "primary", className, ...rest }: ButtonLinkProps
       },
     ],
     variant,
-    "px-3 py-2 rounded text-white cursor-pointer"
+    "px-3 py-2 rounded text-white cursor-pointer disabled:opacity-65"
   );
 
   return <Link {...rest} className={twMerge(className, v)} />;

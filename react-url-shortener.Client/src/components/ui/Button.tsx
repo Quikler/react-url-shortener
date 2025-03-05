@@ -26,7 +26,7 @@ const Button = ({ variant = "primary", className, ...rest }: ButtonProps) => {
       },
     ],
     variant,
-    "px-3 py-2 rounded text-white cursor-pointer"
+    "px-3 py-2 rounded text-white cursor-pointer disabled:opacity-65"
   );
 
   return <button {...rest} className={twMerge(className, v)} />;
