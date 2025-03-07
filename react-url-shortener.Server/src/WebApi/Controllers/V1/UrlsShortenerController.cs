@@ -2,18 +2,26 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using WebApi.Contracts;
+using WebApi.Hubs;
+using WebApi.Hubs.Clients;
 using WebApi.Mapping;
 using WebApi.Services.UrlShortener;
 using WebApi.Utils.Extensions;
 
 namespace WebApi.Controllers.V1;
 
-public class UrlsShortenerController(IUrlShortenerService urlShortenerService) : BaseApiController
+public class UrlsShortenerController(IUrlShortenerService urlShortenerService, IHubContext<UrlsHub, IUrlsClient> urlsHub) : BaseApiController
 {
     [HttpGet(ApiRoutes.Urls.GetAll)]
     public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
+        if (pageNumber <= 0 || pageSize <= 0)
+        {
+            return BadRequest("Invalid page number or page size");
+        }
+
         var result = await urlShortenerService.GetAllAsync(pageNumber, pageSize);
 
         return result.Match(
@@ -56,8 +64,13 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
 
         var result = await urlShortenerService.CreateShortenUrlAsync(url, userId);
 
-        return result.Match(
-            urlDto => CreatedAtAction(nameof(RedirectToOriginal), new { shortCode = urlDto.ShortCode }, urlDto.ToResponse(RootApiUrl)),
+        return await result.MatchAsync<IActionResult>(
+            async urlDto =>
+            {
+                var response = urlDto.ToResponse(RootApiUrl);
+                await urlsHub.Clients.All.CreateUrl(response);
+                return CreatedAtAction(nameof(RedirectToOriginal), new { shortCode = urlDto.ShortCode }, response);
+            },
             failure => failure.ToActionResult()
         );
     }
@@ -73,8 +86,12 @@ public class UrlsShortenerController(IUrlShortenerService urlShortenerService) :
 
         var result = await urlShortenerService.DeleteUrlAsync(urlId, userId, HttpContext.GetUserRoles());
 
-        return result.Match(
-            success => NoContent(),
+        return await result.MatchAsync<IActionResult>(
+            async success =>
+            {
+                await urlsHub.Clients.All.DeleteUrl(urlId);
+                return NoContent();
+            },
             failure => failure.ToActionResult()
         );
     }

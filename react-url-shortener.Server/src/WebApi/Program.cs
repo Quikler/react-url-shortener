@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Configurations;
 using WebApi.Filters;
+using WebApi.Hubs;
 using WebApi.Providers;
 using WebApi.Repositories.Url;
 using WebApi.Services.About;
@@ -37,6 +38,8 @@ builder.WebHost.UseUrls("https://localhost:7207");
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddSingleton<TokenProvider>();
 
@@ -146,6 +149,8 @@ app.MapControllers().RequireCors(CORS_POLICY);
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<UrlsHub>("/urlsHub").RequireCors(CORS_POLICY);
 
 app.UseStaticFiles();
 

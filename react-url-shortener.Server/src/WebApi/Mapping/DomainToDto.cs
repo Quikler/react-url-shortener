@@ -43,14 +43,14 @@ public static class DomainToDto
 
     public static PaginationDto<TResult> ToPagination<T, TResult>(this IEnumerable<T> collection,
         Func<T, TResult> itemsSelect,
-        int totalRecords,
+        int totalCount,
         int totalPages,
         int pageNumber,
         int pageSize)
     {
         return new PaginationDto<TResult>
         {
-            TotalCount = totalRecords,
+            TotalCount = totalCount,
             TotalPages = totalPages,
             PageNumber = pageNumber,
             PageSize = pageSize,

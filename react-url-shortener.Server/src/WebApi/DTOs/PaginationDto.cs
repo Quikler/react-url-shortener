@@ -8,7 +8,7 @@ public class PaginationDto<T>
     public required int PageSize { get; set; }
     public required IEnumerable<T> Items { get; set; } = [];
 
-    public static PaginationDto<T> Empty => new PaginationDto<T>
+    public static PaginationDto<T> Empty => new()
     {
         TotalCount = 0,
         TotalPages = 1,
