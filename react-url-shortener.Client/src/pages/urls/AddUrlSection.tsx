@@ -5,7 +5,7 @@ import { useToast } from "@src/hooks/useToast";
 import { handleError } from "@src/utils/helpers";
 import { useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
-import { useUrls } from "./UrlsContext";
+import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 
 type AddUrlSectionProps = React.HTMLAttributes<HTMLDivElement> & {};
 
@@ -21,12 +21,11 @@ const AddUrlSection = ({ className, ...rest }: AddUrlSectionProps) => {
     },
   });
 
-  const { createUrl } = useUrls();
   const { danger, success } = useToast();
 
   const handleAddUrlSubmit = handleSubmit(async (data) => {
     try {
-      await createUrl(data.url);
+      await UrlsShortenerService.create(data.url);
       success("Url created successfully");
     } catch (e: any) {
       handleError(e, danger);

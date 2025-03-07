@@ -3,6 +3,8 @@ import LoadingScreen from "@src/components/ui/LoadingScreen";
 import { UrlResponse } from "@src/services/api/models/Url";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import useUrlsHubConnection from "./hooks/useUrlsHubConnection";
+import { useAuth } from "@src/hooks/useAuth";
 
 type UrlsContextType = {
   urls: UrlResponse[];
@@ -11,8 +13,6 @@ type UrlsContextType = {
   pageNumber: number;
   pageSize: number;
   fetchUrls: (pageNumber: number, pageSize: number, signal?: AbortSignal) => Promise<void>;
-  deleteUrl: (urlId: string) => Promise<void>;
-  createUrl: (originalUrl: string) => Promise<void>;
 };
 
 const UrlsContext = React.createContext({} as UrlsContextType);
@@ -20,22 +20,18 @@ const UrlsContext = React.createContext({} as UrlsContextType);
 type UrlsContextProviderProps = { children: React.ReactNode };
 
 export const UrlsContextProvider = ({ children }: UrlsContextProviderProps) => {
+  const { user } = useAuth();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorScreenProps | null>(null);
+
+  const connection = useUrlsHubConnection();
 
   const [urls, setUrls] = useState<UrlResponse[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(0);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    fetchUrls(1, 5, abortController.signal);
-
-    return () => abortController.abort();
-  }, []);
 
   const fetchUrls = async (pageNumber: number = 1, pageSize: number = 5, signal?: AbortSignal) => {
     try {
@@ -55,48 +51,76 @@ export const UrlsContextProvider = ({ children }: UrlsContextProviderProps) => {
     }
   };
 
-  const createUrl = async (originalUrl: string) => {
-    const urlResponse = await UrlsShortenerService.create(originalUrl);
-    if (!urlResponse) return;
+  useEffect(() => {
+    const abortController = new AbortController();
 
-    const newUrls = [...urls, urlResponse];
-    if (newUrls.length > pageSize) {
-      if (pageNumber === totalPages) {
-        await fetchUrls(pageNumber + 1, 5);
-      } else {
-        await fetchUrls(totalPages, 5);
-      }
-    } else {
-      setUrls(newUrls);
-    }
-  };
+    fetchUrls(1, 5, abortController.signal);
 
-  const deleteUrl = async (urlId: string) => {
-    await UrlsShortenerService.delete(urlId);
-    const newUrls = urls.filter((u) => u.id !== urlId);
-    if (newUrls.length === 0) {
-      if (pageNumber === 1) {
-        await fetchUrls(pageNumber, 5);
-      } else {
-        await fetchUrls(pageNumber - 1, 5);
-      }
-    } else {
-      setUrls(newUrls);
-    }
-  };
+    return () => abortController.abort();
+  }, []);
+
+  useEffect(() => {
+    if (!connection) return;
+
+    const registerSignalREventHandlers = () => {
+      connection.off("CreateUrl");
+      connection.on("CreateUrl", async (urlResponse: UrlResponse) => {
+        setTotalCount((prev) => prev + 1);
+
+        if (totalPages === 0) {
+          setTotalPages((prev) => prev + 1);
+        }
+
+        const isNewUrlsLenghtBiggerThanPageSize = urls.length + 1 > pageSize;
+        const isLastPage = pageNumber === totalPages;
+        const isCurrentUserCreator = urlResponse.userId === user?.id;
+
+        if (isCurrentUserCreator) {
+          if (isNewUrlsLenghtBiggerThanPageSize) {
+            await fetchUrls(totalPages + 1, 5);
+          } else {
+            await fetchUrls(totalPages, 5);
+          }
+        }
+
+        if (!isNewUrlsLenghtBiggerThanPageSize && isLastPage) {
+          const newUrls = [...urls, urlResponse];
+          setUrls(newUrls);
+        }
+      });
+
+      connection.off("DeleteUrl");
+      connection.on("DeleteUrl", async (_urlId: string) => {
+        setTotalCount((prev) => prev - 1);
+
+        const isNewUrlsLengthIsZero = urls.length - 1 === 0;
+        const isFirstPage = pageNumber === 1;
+
+        if (isNewUrlsLengthIsZero) {
+          if (isFirstPage) {
+            await fetchUrls(pageNumber, 5);
+          } else {
+            await fetchUrls(pageNumber - 1, 5);
+          }
+        } else {
+          await fetchUrls(pageNumber, 5);
+        }
+      });
+    };
+
+    registerSignalREventHandlers();
+  }, [connection, urls, pageNumber, pageSize, totalPages, totalCount]);
 
   const value = useMemo(
     () => ({
       urls,
       fetchUrls,
-      deleteUrl,
-      createUrl,
       totalCount,
       totalPages,
       pageNumber,
       pageSize,
     }),
-    [urls]
+    [urls, totalCount, totalPages, pageNumber, pageSize]
   );
 
   if (loading) return <LoadingScreen />;

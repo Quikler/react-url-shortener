@@ -9,6 +9,7 @@ import { UrlResponse } from "@src/services/api/models/Url";
 import { handleError } from "@src/utils/helpers";
 import { useToast } from "@src/hooks/useToast";
 import Button from "@src/components/ui/Button";
+import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 
 type UrlsTableProps = {
   onShortUrlClick: (url: UrlResponse) => void;
@@ -16,12 +17,12 @@ type UrlsTableProps = {
 
 const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
   const { user, hasRole } = useAuth();
-  const { urls, fetchUrls, deleteUrl, totalCount, totalPages, pageNumber, pageSize } = useUrls();
+  const { urls, fetchUrls, totalCount, totalPages, pageNumber, pageSize } = useUrls();
   const { success, danger } = useToast();
 
   const handleDeleteUrl = async (urlId: string) => {
     try {
-      await deleteUrl(urlId);
+      await UrlsShortenerService.delete(urlId);
       success("Url deleted successfully");
     } catch (e: any) {
       handleError(e, danger);
@@ -91,7 +92,7 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
           ))}
         </tbody>
       </table>
-      <div className="flex gap-2 justify-center">
+      <div className="flex items-center gap-2 justify-center">
         <Button disabled={pageNumber <= 1} onClick={handleBackClick}>
           Back
         </Button>
