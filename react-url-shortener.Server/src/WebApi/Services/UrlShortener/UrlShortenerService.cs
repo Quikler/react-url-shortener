@@ -41,7 +41,7 @@ public class UrlShortenerService(IUnitOfWork unitOfWork, IUrlRepository urlRepos
             UserId = userId,
         };
 
-        await _urlRepository.AddUrlAsync(url);
+        _urlRepository.AddUrl(url);
         int rows = await _unitOfWork.SaveChangesAsync();
 
         return rows == 0 ? FailureDto.BadRequest("Cannot create url.") : url.ToUrlDto();

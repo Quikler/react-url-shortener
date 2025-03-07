@@ -15,7 +15,7 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
     private readonly AppDbContext _dbContext = dbContext;
     private readonly IMemoryCache _memoryCache = memoryCache;
 
-    public async Task<int> DeleteUrlAsync(Guid urlId)
+    public virtual async Task<int> DeleteUrlAsync(Guid urlId)
     {
         int rows = await _dbContext.Urls
             .Where(u => u.Id == urlId)
@@ -23,14 +23,14 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
 
         if (rows > 0)
         {
-            _memoryCache.Remove(CacheKeys.Urls);
+            //_memoryCache.Remove(CacheKeys.Urls);
             _memoryCache.Remove($"{CacheKeys.UrlId}-{urlId}");
         }
 
         return rows;
     }
 
-    public async Task<PaginationDto<UrlDto>> GetAllUrlDtoAsync(int pageNumber, int pageSize)
+    public virtual async Task<PaginationDto<UrlDto>> GetAllUrlDtoAsync(int pageNumber, int pageSize)
     {
         var query = _dbContext.Urls.AsNoTracking();
 
@@ -66,7 +66,7 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
         // return urls ?? PaginationDto<UrlDto>.Empty;
     }
 
-    public async Task<UrlInfoDto?> GetUrlInfoDtoAsync(Guid urlId)
+    public virtual async Task<UrlInfoDto?> GetUrlInfoDtoAsync(Guid urlId)
     {
         var url = await _memoryCache.GetOrCreateAsync($"{CacheKeys.UrlId}-{urlId}", entry =>
         {
@@ -81,7 +81,7 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
         return url;
     }
 
-    public Task<string?> GetOriginalUrlByShortCodeAsync(string shortCode)
+    public virtual Task<string?> GetOriginalUrlByShortCodeAsync(string shortCode)
     {
         return _dbContext.Urls
             .AsNoTracking()
@@ -90,34 +90,34 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
             .FirstOrDefaultAsync();
     }
 
-    public Task<bool> IsUrlOriginalExistAsync(string originalUrl)
+    public virtual Task<bool> IsUrlOriginalExistAsync(string originalUrl)
     {
         return _dbContext.Urls.AnyAsync(u => u.UrlOriginal == originalUrl);
     }
 
-    public Task<bool> IsUrlByIdExistAsync(Guid urlId)
+    public virtual Task<bool> IsUrlByIdExistAsync(Guid urlId)
     {
         return _dbContext.Urls.AnyAsync(u => u.Id == urlId);
     }
 
-    public async Task AddUrlAsync(UrlEntity urlEntity)
+    public virtual async Task AddUrlAsync(UrlEntity urlEntity)
     {
         await _dbContext.Urls.AddAsync(urlEntity);
         _memoryCache.Remove(CacheKeys.Urls);
     }
 
-    public void AddUrl(UrlEntity urlEntity)
+    public virtual void AddUrl(UrlEntity urlEntity)
     {
         _dbContext.Urls.Add(urlEntity);
         _memoryCache.Remove(CacheKeys.Urls);
     }
 
-    public Task<bool> IsUserOwnsUrlAsync(Guid userId, Guid urlId)
+    public virtual Task<bool> IsUserOwnsUrlAsync(Guid userId, Guid urlId)
     {
         return _dbContext.Urls.AnyAsync(u => u.Id == urlId && u.UserId == userId);
     }
 
-    public async Task<bool> IsUserOwnerOrAdminAsync(Guid userId, Guid urlId, string[] roles)
+    public virtual async Task<bool> IsUserOwnerOrAdminAsync(Guid userId, Guid urlId, string[] roles)
     {
         return roles.Contains("Admin") || await IsUserOwnsUrlAsync(userId, urlId);
     }
