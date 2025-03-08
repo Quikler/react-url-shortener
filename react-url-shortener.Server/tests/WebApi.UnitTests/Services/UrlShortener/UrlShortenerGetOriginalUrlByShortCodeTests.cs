@@ -1,6 +1,7 @@
 using AutoFixture;
 using Moq;
 using Shouldly;
+using WebApi.Services.UrlShortener;
 
 namespace WebAPI.UnitTests.Services.UrlShortener;
 
@@ -34,7 +35,7 @@ public class UrlShortenerGetOriginalUrlByShortCodeTests : BaseUrlShortenerTests
         );
 
         matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.NotFound);
-        matchResult.Errors.ShouldContain("Url not found.");
+        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.URL_NOT_FOUND);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.GetOriginalUrlByShortCodeAsync(_shortCode), Times.Once);

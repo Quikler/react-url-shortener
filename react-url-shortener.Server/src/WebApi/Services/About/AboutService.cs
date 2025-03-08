@@ -1,5 +1,6 @@
 using WebApi.Common;
 using WebApi.DTOs;
+using WebAPI.Services.About;
 
 namespace WebApi.Services.About;
 
@@ -16,7 +17,7 @@ public class AboutService(string rootPath) : IAboutService
         }
         catch
         {
-            return FailureDto.BadRequest("Cannot update about.");
+            return FailureDto.BadRequest(AboutServiceMessages.CANNOT_GET_ABOUT);
         }
     }
 
@@ -29,7 +30,7 @@ public class AboutService(string rootPath) : IAboutService
         }
         catch
         {
-            return FailureDto.BadRequest("Cannot update about.");
+            return FailureDto.BadRequest(AboutServiceMessages.CANNOT_UPDATE_ABOUT);
         }
     }
 }

@@ -24,7 +24,7 @@ public class IdentityService(AppDbContext dbContext,
     {
         if (await dbContext.Users.AnyAsync(u => u.UserName == signupDto.Username))
         {
-            return FailureDto.Conflict("Username already exist.");
+            return FailureDto.Conflict(IdentityServiceMessages.USERNAME_ALREADY_EXIST);
         }
 
         var user = new UserEntity
@@ -42,11 +42,11 @@ public class IdentityService(AppDbContext dbContext,
 
         if (user is null)
         {
-            return FailureDto.Unauthorized("Invalid username or password.");
+            return FailureDto.Unauthorized(IdentityServiceMessages.INVALID_USERNAME_OR_PASSWORD);
         }
 
         var isCorrectPassword = await userManager.CheckPasswordAsync(user, loginDto.Password);
-        return isCorrectPassword ? await GenerateAuthDtoForUserAsync(user) : FailureDto.Unauthorized("Invalid username or password.");
+        return isCorrectPassword ? await GenerateAuthDtoForUserAsync(user) : FailureDto.Unauthorized(IdentityServiceMessages.INVALID_USERNAME_OR_PASSWORD);
     }
 
     private async Task<AuthDto> GenerateAuthDtoForUserAsync(UserEntity user)
@@ -82,12 +82,12 @@ public class IdentityService(AppDbContext dbContext,
 
         if (storedRefreshToken is null || storedRefreshToken.ExpiryDate < DateTime.UtcNow)
         {
-            return FailureDto.Unauthorized("Refresh token has expired.");
+            return FailureDto.Unauthorized(IdentityServiceMessages.REFRESH_TOKEN_EXPIRED);
         }
 
         if (storedRefreshToken.User is null)
         {
-            return FailureDto.Unauthorized("User not found.");
+            return FailureDto.Unauthorized(IdentityServiceMessages.USER_NOT_FOUND);
         }
 
         var newRefreshToken = tokenProvider.GenerateRefreshToken();
@@ -107,12 +107,12 @@ public class IdentityService(AppDbContext dbContext,
 
         if (storedRefreshToken is null || storedRefreshToken.ExpiryDate < DateTime.UtcNow)
         {
-            return FailureDto.Unauthorized("Refresh token has expired.");
+            return FailureDto.Unauthorized(IdentityServiceMessages.REFRESH_TOKEN_EXPIRED);
         }
 
         if (storedRefreshToken.User is null)
         {
-            return FailureDto.Unauthorized("User not found.");
+            return FailureDto.Unauthorized(IdentityServiceMessages.USER_NOT_FOUND);
         }
 
         return await GenerateAuthDtoForUserAsync(storedRefreshToken.User);

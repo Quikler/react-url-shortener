@@ -2,6 +2,7 @@ using AutoFixture;
 using DAL.Entities;
 using Moq;
 using Shouldly;
+using WebApi.Services.UrlShortener;
 
 namespace WebAPI.UnitTests.Services.UrlShortener;
 
@@ -35,7 +36,7 @@ public class UrlShortenerCreateShortenUrlTests : BaseUrlShortenerTests
         );
 
         matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.Conflict);
-        matchResult.Errors.ShouldContain("Url already exist.");
+        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.URL_ALREADY_EXIST);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlOriginalExistAsync(_originalUrl), Times.Once);
@@ -64,7 +65,7 @@ public class UrlShortenerCreateShortenUrlTests : BaseUrlShortenerTests
         );
 
         matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.BadRequest);
-        matchResult.Errors.ShouldContain("Cannot create url.");
+        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.CANNOT_CREATE_URL);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlOriginalExistAsync(_originalUrl), Times.Once);

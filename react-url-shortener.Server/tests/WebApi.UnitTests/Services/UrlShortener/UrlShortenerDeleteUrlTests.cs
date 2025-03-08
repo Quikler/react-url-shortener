@@ -1,5 +1,6 @@
 using Moq;
 using Shouldly;
+using WebApi.Services.UrlShortener;
 
 namespace WebAPI.UnitTests.Services.UrlShortener;
 
@@ -35,7 +36,7 @@ public class UrlShortenerDeleteUrlTests : BaseUrlShortenerTests
         );
 
         matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.NotFound);
-        matchResult.Errors.ShouldContain("Url not found.");
+        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.URL_NOT_FOUND);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlByIdExistAsync(_urlId), Times.Once);
@@ -64,7 +65,7 @@ public class UrlShortenerDeleteUrlTests : BaseUrlShortenerTests
         );
 
         matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.Forbidden);
-        matchResult.Errors.ShouldContain("User doesn't authorized to url.");
+        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.USER_DOESNT_AUTHORIZED_TO_URL);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlByIdExistAsync(_urlId), Times.Once);
@@ -100,7 +101,7 @@ public class UrlShortenerDeleteUrlTests : BaseUrlShortenerTests
         );
 
         matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.BadRequest);
-        matchResult.Errors.ShouldContain("Cannot delete url.");
+        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.CANNOT_DELETE_URL);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlByIdExistAsync(_urlId), Times.Once);

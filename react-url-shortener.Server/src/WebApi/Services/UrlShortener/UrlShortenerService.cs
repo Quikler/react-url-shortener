@@ -23,14 +23,14 @@ public class UrlShortenerService(IUnitOfWork unitOfWork, IUrlRepository urlRepos
     public async Task<Result<string, FailureDto>> GetOriginalUrlByShortCodeAsync(string shortCode)
     {
         var urlOriginal = await _urlRepository.GetOriginalUrlByShortCodeAsync(shortCode);
-        return urlOriginal is null ? FailureDto.NotFound("Url not found.") : urlOriginal;
+        return urlOriginal is null ? FailureDto.NotFound(UrlShortenerServiceMessages.URL_NOT_FOUND) : urlOriginal;
     }
 
     public async Task<Result<UrlDto, FailureDto>> CreateShortenUrlAsync(string originalUrl, Guid userId)
     {
         if (await _urlRepository.IsUrlOriginalExistAsync(originalUrl))
         {
-            return FailureDto.Conflict("Url already exist.");
+            return FailureDto.Conflict(UrlShortenerServiceMessages.URL_ALREADY_EXIST);
         }
 
         var shortCode = GenerateShortCode();
@@ -44,29 +44,29 @@ public class UrlShortenerService(IUnitOfWork unitOfWork, IUrlRepository urlRepos
         _urlRepository.AddUrl(url);
         int rows = await _unitOfWork.SaveChangesAsync();
 
-        return rows == 0 ? FailureDto.BadRequest("Cannot create url.") : url.ToUrlDto();
+        return rows == 0 ? FailureDto.BadRequest(UrlShortenerServiceMessages.CANNOT_CREATE_URL) : url.ToUrlDto();
     }
 
     public async Task<Result<bool, FailureDto>> DeleteUrlAsync(Guid urlId, Guid userId, string[] userRoles)
     {
         if (!await _urlRepository.IsUrlByIdExistAsync(urlId))
         {
-            return FailureDto.NotFound("Url not found.");
+            return FailureDto.NotFound(UrlShortenerServiceMessages.URL_NOT_FOUND);
         }
 
         if (!await _urlRepository.IsUserOwnerOrAdminAsync(userId, urlId, userRoles))
         {
-            return FailureDto.Forbidden("User doesn't authorized to url.");
+            return FailureDto.Forbidden(UrlShortenerServiceMessages.USER_DOESNT_AUTHORIZED_TO_URL);
         }
 
         int rows = await _urlRepository.DeleteUrlAsync(urlId);
-        return rows == 0 ? FailureDto.BadRequest("Cannot delete url.") : true;
+        return rows == 0 ? FailureDto.BadRequest(UrlShortenerServiceMessages.CANNOT_DELETE_URL) : true;
     }
 
     public async Task<Result<UrlInfoDto, FailureDto>> GetInfoAsync(Guid urlId)
     {
         var url = await _urlRepository.GetUrlInfoDtoAsync(urlId);
-        return url is null ? FailureDto.NotFound("Url not found.") : url;
+        return url is null ? FailureDto.NotFound(UrlShortenerServiceMessages.URL_NOT_FOUND) : url;
     }
 
     private const string Base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
