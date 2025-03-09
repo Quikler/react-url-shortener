@@ -5,7 +5,7 @@ using WebApi.Repositories.Url;
 using WebApi.Services.Unit;
 using WebApi.Services.UrlShortener;
 
-namespace WebAPI.UnitTests.Services.UrlShortener;
+namespace WebApi.UnitTests.Services.UrlShortener;
 
 public class BaseUrlShortenerTests : BaseUnitTest
 {

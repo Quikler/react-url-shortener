@@ -7,7 +7,6 @@ namespace WebApi.Repositories.Url;
 public interface IUrlRepository
 {
     Task<PaginationDto<UrlDto>> GetAllUrlDtoAsync(int pageNumber, int pageSize);
-    Task AddUrlAsync(UrlEntity urlEntity);
     void AddUrl(UrlEntity urlEntity);
     Task<string?> GetOriginalUrlByShortCodeAsync(string shortCode);
     Task<UrlInfoDto?> GetUrlInfoDtoAsync(Guid urlId);

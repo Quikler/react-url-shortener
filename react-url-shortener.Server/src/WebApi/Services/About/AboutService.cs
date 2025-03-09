@@ -1,6 +1,5 @@
 using WebApi.Common;
 using WebApi.DTOs;
-using WebAPI.Services.About;
 
 namespace WebApi.Services.About;
 

@@ -1,6 +1,6 @@
 using AutoFixture;
 
-namespace WebAPI.UnitTests;
+namespace WebApi.UnitTests;
 
 public class BaseUnitTest
 {

@@ -3,8 +3,9 @@ using Moq;
 using Shouldly;
 using WebApi.DTOs.Url;
 using WebApi.Services.UrlShortener;
+using WebApi.UnitTests.Extensions;
 
-namespace WebAPI.UnitTests.Services.UrlShortener;
+namespace WebApi.UnitTests.Services.UrlShortener;
 
 public class UrlShortenerGetInfoTests : BaseUrlShortenerTests
 {
@@ -32,14 +33,10 @@ public class UrlShortenerGetInfoTests : BaseUrlShortenerTests
         var infoResult = await UrlShortenerService.GetInfoAsync(_urlId);
 
         // Assert
-        infoResult.IsSuccess.ShouldBeFalse();
-        var matchResult = infoResult.Match(
-            success => throw new Exception("Should not be success"),
-            failure => failure
-        );
+        var failure = infoResult.Failure();
 
-        matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.NotFound);
-        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.URL_NOT_FOUND);
+        failure.FailureCode.ShouldBe(WebApi.Common.FailureCode.NotFound);
+        failure.Errors.ShouldContain(UrlShortenerServiceMessages.URL_NOT_FOUND);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.GetUrlInfoDtoAsync(_urlId), Times.Once);
@@ -57,18 +54,14 @@ public class UrlShortenerGetInfoTests : BaseUrlShortenerTests
         var infoResult = await UrlShortenerService.GetInfoAsync(_urlId);
 
         // Assert
-        infoResult.IsSuccess.ShouldBeTrue();
-        var matchResult = infoResult.Match(
-            success => success,
-            failure => throw new Exception("Should not be failure")
-        );
+        var success = infoResult.Success();
 
-        matchResult.Id.ShouldBe(_urlId);
-        matchResult.CreatedAt.ShouldBe(_urlInfoDto.CreatedAt);
-        matchResult.ShortCode.ShouldBe(_urlInfoDto.ShortCode);
-        matchResult.UrlOriginal.ShouldBe(_urlInfoDto.UrlOriginal);
-        matchResult.UserId.ShouldBe(_urlInfoDto.UserId);
-        matchResult.User.ShouldBe(_urlInfoDto.User);
+        success.Id.ShouldBe(_urlId);
+        success.CreatedAt.ShouldBe(_urlInfoDto.CreatedAt);
+        success.ShortCode.ShouldBe(_urlInfoDto.ShortCode);
+        success.UrlOriginal.ShouldBe(_urlInfoDto.UrlOriginal);
+        success.UserId.ShouldBe(_urlInfoDto.UserId);
+        success.User.ShouldBe(_urlInfoDto.User);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.GetUrlInfoDtoAsync(_urlId), Times.Once);

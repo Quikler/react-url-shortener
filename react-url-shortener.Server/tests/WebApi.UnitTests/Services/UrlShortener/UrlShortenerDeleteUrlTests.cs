@@ -1,8 +1,9 @@
 using Moq;
 using Shouldly;
 using WebApi.Services.UrlShortener;
+using WebApi.UnitTests.Extensions;
 
-namespace WebAPI.UnitTests.Services.UrlShortener;
+namespace WebApi.UnitTests.Services.UrlShortener;
 
 public class UrlShortenerDeleteUrlTests : BaseUrlShortenerTests
 {
@@ -29,14 +30,10 @@ public class UrlShortenerDeleteUrlTests : BaseUrlShortenerTests
         var deleteResult = await UrlShortenerService.DeleteUrlAsync(_urlId, _userId, _userRoles);
 
         // Assert
-        deleteResult.IsSuccess.ShouldBeFalse();
-        var matchResult = deleteResult.Match(
-            success => throw new Exception("Should not be success"),
-            failure => failure
-        );
+        var failure = deleteResult.Failure();
 
-        matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.NotFound);
-        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.URL_NOT_FOUND);
+        failure.FailureCode.ShouldBe(WebApi.Common.FailureCode.NotFound);
+        failure.Errors.ShouldContain(UrlShortenerServiceMessages.URL_NOT_FOUND);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlByIdExistAsync(_urlId), Times.Once);
@@ -58,14 +55,10 @@ public class UrlShortenerDeleteUrlTests : BaseUrlShortenerTests
         var deleteResult = await UrlShortenerService.DeleteUrlAsync(_urlId, _userId, _userRoles);
 
         // Assert
-        deleteResult.IsSuccess.ShouldBeFalse();
-        var matchResult = deleteResult.Match(
-            success => throw new Exception("Should not be success"),
-            failure => failure
-        );
+        var failure = deleteResult.Failure();
 
-        matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.Forbidden);
-        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.USER_DOESNT_AUTHORIZED_TO_URL);
+        failure.FailureCode.ShouldBe(WebApi.Common.FailureCode.Forbidden);
+        failure.Errors.ShouldContain(UrlShortenerServiceMessages.USER_DOESNT_AUTHORIZED_TO_URL);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlByIdExistAsync(_urlId), Times.Once);
@@ -94,14 +87,10 @@ public class UrlShortenerDeleteUrlTests : BaseUrlShortenerTests
         var deleteResult = await UrlShortenerService.DeleteUrlAsync(_urlId, _userId, _userRoles);
 
         // Assert
-        deleteResult.IsSuccess.ShouldBeFalse();
-        var matchResult = deleteResult.Match(
-            success => throw new Exception("Should not be success"),
-            failure => failure
-        );
+        var failure = deleteResult.Failure();
 
-        matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.BadRequest);
-        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.CANNOT_DELETE_URL);
+        failure.FailureCode.ShouldBe(WebApi.Common.FailureCode.BadRequest);
+        failure.Errors.ShouldContain(UrlShortenerServiceMessages.CANNOT_DELETE_URL);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlByIdExistAsync(_urlId), Times.Once);
@@ -133,7 +122,7 @@ public class UrlShortenerDeleteUrlTests : BaseUrlShortenerTests
         var deleteResult = await UrlShortenerService.DeleteUrlAsync(_urlId, _userId, _userRoles);
 
         // Assert
-        deleteResult.IsSuccess.ShouldBeTrue();
+        deleteResult.Success();
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlByIdExistAsync(_urlId), Times.Once);

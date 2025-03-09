@@ -1,4 +1,4 @@
-namespace WebAPI.Services.About;
+namespace WebApi.Services.About;
 
 public static class AboutServiceMessages
 {

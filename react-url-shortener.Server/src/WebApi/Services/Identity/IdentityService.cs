@@ -1,4 +1,3 @@
-using DAL;
 using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +8,14 @@ using WebApi.DTOs;
 using WebApi.DTOs.Identity;
 using WebApi.Mapping;
 using WebApi.Providers;
+using WebApi.Repositories.RefreshToken;
+using WebApi.Services.Unit;
 
 namespace WebApi.Services.Identity;
 
-public class IdentityService(AppDbContext dbContext,
-    UserManager<UserEntity> userManager,
+public class IdentityService(UserManager<UserEntity> userManager,
+    IRefreshTokenRepository refreshTokenRepository,
+    IUnitOfWork unitOfWork,
     TokenProvider tokenProvider,
     IOptions<JwtConfiguration> jwtConfiguration)
     : IIdentityService
@@ -22,7 +24,7 @@ public class IdentityService(AppDbContext dbContext,
 
     public async Task<Result<AuthDto, FailureDto>> SignupAsync(SignupDto signupDto)
     {
-        if (await dbContext.Users.AnyAsync(u => u.UserName == signupDto.Username))
+        if (await userManager.Users.AnyAsync(u => u.UserName == signupDto.Username))
         {
             return FailureDto.Conflict(IdentityServiceMessages.USERNAME_ALREADY_EXIST);
         }
@@ -38,8 +40,7 @@ public class IdentityService(AppDbContext dbContext,
 
     public async Task<Result<AuthDto, FailureDto>> LoginAsync(LoginDto loginDto)
     {
-        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
-
+        var user = await userManager.FindByNameAsync(loginDto.Username);
         if (user is null)
         {
             return FailureDto.Unauthorized(IdentityServiceMessages.INVALID_USERNAME_OR_PASSWORD);
@@ -49,37 +50,9 @@ public class IdentityService(AppDbContext dbContext,
         return isCorrectPassword ? await GenerateAuthDtoForUserAsync(user) : FailureDto.Unauthorized(IdentityServiceMessages.INVALID_USERNAME_OR_PASSWORD);
     }
 
-    private async Task<AuthDto> GenerateAuthDtoForUserAsync(UserEntity user)
-    {
-        var roles = await userManager.GetRolesAsync(user);
-
-        var refreshToken = new RefreshTokenEntity
-        {
-            UserId = user.Id,
-            Token = tokenProvider.GenerateRefreshToken(),
-            ExpiryDate = DateTime.UtcNow.Add(_jwtConfiguration.RefreshTokenLifetime),
-        };
-
-        await dbContext.RefreshTokens.AddAsync(refreshToken);
-        await dbContext.SaveChangesAsync();
-
-        return CreateAuthDto(user, refreshToken.Token, tokenProvider.CreateToken(user, roles), [.. roles]);
-    }
-
-    private static AuthDto CreateAuthDto(UserEntity user, string refreshToken, string token, string[] roles) => new()
-    {
-        RefreshToken = refreshToken,
-        Token = token,
-        User = user.ToUserDto(),
-        Roles = roles,
-    };
-
     public async Task<Result<AuthDto, FailureDto>> RefreshTokenAsync(string refreshToken)
     {
-        var storedRefreshToken = await dbContext.RefreshTokens
-            .Include(r => r.User)
-            .FirstOrDefaultAsync(r => r.Token == refreshToken);
-
+        var storedRefreshToken = await refreshTokenRepository.GetRefreshTokenWithUserAsync(refreshToken, true);
         if (storedRefreshToken is null || storedRefreshToken.ExpiryDate < DateTime.UtcNow)
         {
             return FailureDto.Unauthorized(IdentityServiceMessages.REFRESH_TOKEN_EXPIRED);
@@ -94,17 +67,17 @@ public class IdentityService(AppDbContext dbContext,
         storedRefreshToken.Token = newRefreshToken;
         storedRefreshToken.ExpiryDate = DateTime.UtcNow.Add(_jwtConfiguration.RefreshTokenLifetime);
 
-        await dbContext.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
 
-        return await GenerateAuthDtoForUserAsync(storedRefreshToken.User);
+        var roles = await userManager.GetRolesAsync(storedRefreshToken.User);
+        var token = tokenProvider.CreateToken(storedRefreshToken.User, roles);
+
+        return CreateAuthDto(storedRefreshToken.User, newRefreshToken, token, [.. roles]);
     }
 
     public async Task<Result<AuthDto, FailureDto>> MeAsync(string refreshToken)
     {
-        var storedRefreshToken = await dbContext.RefreshTokens
-            .Include(r => r.User)
-            .FirstOrDefaultAsync(r => r.Token == refreshToken);
-
+        var storedRefreshToken = await refreshTokenRepository.GetRefreshTokenWithUserAsync(refreshToken);
         if (storedRefreshToken is null || storedRefreshToken.ExpiryDate < DateTime.UtcNow)
         {
             return FailureDto.Unauthorized(IdentityServiceMessages.REFRESH_TOKEN_EXPIRED);
@@ -115,6 +88,35 @@ public class IdentityService(AppDbContext dbContext,
             return FailureDto.Unauthorized(IdentityServiceMessages.USER_NOT_FOUND);
         }
 
-        return await GenerateAuthDtoForUserAsync(storedRefreshToken.User);
+        var roles = await userManager.GetRolesAsync(storedRefreshToken!.User);
+        var token = tokenProvider.CreateToken(storedRefreshToken.User, roles);
+
+        return CreateAuthDto(storedRefreshToken.User, storedRefreshToken.Token, token, [.. roles]);
     }
+
+    private async Task<AuthDto> GenerateAuthDtoForUserAsync(UserEntity user)
+    {
+        IList<string> roles = await userManager.GetRolesAsync(user);
+
+        var refreshToken = new RefreshTokenEntity
+        {
+            UserId = user.Id,
+            User = user,
+            Token = tokenProvider.GenerateRefreshToken(),
+            ExpiryDate = DateTime.UtcNow.Add(_jwtConfiguration.RefreshTokenLifetime),
+        };
+
+        refreshTokenRepository.AddRefreshToken(refreshToken);
+        await unitOfWork.SaveChangesAsync();
+
+        return CreateAuthDto(user, refreshToken.Token, tokenProvider.CreateToken(user, roles), [.. roles]);
+    }
+
+    private static AuthDto CreateAuthDto(UserEntity user, string refreshToken, string token, string[] roles) => new()
+    {
+        RefreshToken = refreshToken,
+        Token = token,
+        User = user.ToUserDto(),
+        Roles = roles,
+    };
 }

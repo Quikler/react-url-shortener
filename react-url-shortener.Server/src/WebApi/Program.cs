@@ -10,6 +10,7 @@ using WebApi.Configurations;
 using WebApi.Filters;
 using WebApi.Hubs;
 using WebApi.Providers;
+using WebApi.Repositories.RefreshToken;
 using WebApi.Repositories.Url;
 using WebApi.Services.About;
 using WebApi.Services.Identity;
@@ -44,6 +45,7 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<TokenProvider>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 builder.Services.AddScoped<IAboutService, AboutService>(_ => new AboutService(builder.Environment.WebRootPath));
 builder.Services.AddScoped<IUrlShortenerService, UrlShortenerService>();

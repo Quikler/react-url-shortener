@@ -3,8 +3,9 @@ using DAL.Entities;
 using Moq;
 using Shouldly;
 using WebApi.Services.UrlShortener;
+using WebApi.UnitTests.Extensions;
 
-namespace WebAPI.UnitTests.Services.UrlShortener;
+namespace WebApi.UnitTests.Services.UrlShortener;
 
 public class UrlShortenerCreateShortenUrlTests : BaseUrlShortenerTests
 {
@@ -29,14 +30,10 @@ public class UrlShortenerCreateShortenUrlTests : BaseUrlShortenerTests
         var createResult = await UrlShortenerService.CreateShortenUrlAsync(_originalUrl, _userId);
 
         // Assert
-        createResult.IsSuccess.ShouldBeFalse();
-        var matchResult = createResult.Match(
-            success => throw new Exception("Should not be success"),
-            failure => failure
-        );
+        var failure = createResult.Failure();
 
-        matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.Conflict);
-        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.URL_ALREADY_EXIST);
+        failure.FailureCode.ShouldBe(WebApi.Common.FailureCode.Conflict);
+        failure.Errors.ShouldContain(UrlShortenerServiceMessages.URL_ALREADY_EXIST);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlOriginalExistAsync(_originalUrl), Times.Once);
@@ -58,14 +55,10 @@ public class UrlShortenerCreateShortenUrlTests : BaseUrlShortenerTests
         var createResult = await UrlShortenerService.CreateShortenUrlAsync(_originalUrl, _userId);
 
         // Assert
-        createResult.IsSuccess.ShouldBeFalse();
-        var matchResult = createResult.Match(
-            success => throw new Exception("Should not be success"),
-            failure => failure
-        );
+        var failure = createResult.Failure();
 
-        matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.BadRequest);
-        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.CANNOT_CREATE_URL);
+        failure.FailureCode.ShouldBe(WebApi.Common.FailureCode.BadRequest);
+        failure.Errors.ShouldContain(UrlShortenerServiceMessages.CANNOT_CREATE_URL);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlOriginalExistAsync(_originalUrl), Times.Once);
@@ -94,14 +87,10 @@ public class UrlShortenerCreateShortenUrlTests : BaseUrlShortenerTests
         var createResult = await UrlShortenerService.CreateShortenUrlAsync(_originalUrl, _userId);
 
         // Assert
-        createResult.IsSuccess.ShouldBeTrue();
-        var matchResult = createResult.Match(
-            success => success,
-            failure => throw new Exception("Should not be failure")
-        );
+        var success = createResult.Success();
 
-        matchResult.UrlOriginal.ShouldBe(_originalUrl);
-        matchResult.UserId.ShouldBe(_userId);
+        success.UrlOriginal.ShouldBe(_originalUrl);
+        success.UserId.ShouldBe(_userId);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.IsUrlOriginalExistAsync(_originalUrl), Times.Once);

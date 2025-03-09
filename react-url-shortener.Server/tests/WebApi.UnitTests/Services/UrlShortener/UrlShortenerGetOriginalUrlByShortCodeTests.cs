@@ -2,8 +2,9 @@ using AutoFixture;
 using Moq;
 using Shouldly;
 using WebApi.Services.UrlShortener;
+using WebApi.UnitTests.Extensions;
 
-namespace WebAPI.UnitTests.Services.UrlShortener;
+namespace WebApi.UnitTests.Services.UrlShortener;
 
 public class UrlShortenerGetOriginalUrlByShortCodeTests : BaseUrlShortenerTests
 {
@@ -28,14 +29,10 @@ public class UrlShortenerGetOriginalUrlByShortCodeTests : BaseUrlShortenerTests
         var urlOriginalResult = await UrlShortenerService.GetOriginalUrlByShortCodeAsync(_shortCode);
 
         // Assert
-        urlOriginalResult.IsSuccess.ShouldBeFalse();
-        var matchResult = urlOriginalResult.Match(
-            success => throw new Exception("Should not be success."),
-            failure => failure
-        );
+        var failure = urlOriginalResult.Failure();
 
-        matchResult.FailureCode.ShouldBe(WebApi.Common.FailureCode.NotFound);
-        matchResult.Errors.ShouldContain(UrlShortenerServiceMessages.URL_NOT_FOUND);
+        failure.FailureCode.ShouldBe(WebApi.Common.FailureCode.NotFound);
+        failure.Errors.ShouldContain(UrlShortenerServiceMessages.URL_NOT_FOUND);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.GetOriginalUrlByShortCodeAsync(_shortCode), Times.Once);
@@ -53,13 +50,9 @@ public class UrlShortenerGetOriginalUrlByShortCodeTests : BaseUrlShortenerTests
         var urlOriginalResult = await UrlShortenerService.GetOriginalUrlByShortCodeAsync(_shortCode);
 
         // Assert
-        urlOriginalResult.IsSuccess.ShouldBeTrue();
-        var matchResult = urlOriginalResult.Match(
-            success => success,
-            failure => throw new Exception("Should not be failure.")
-        );
+        var success = urlOriginalResult.Success();
 
-        matchResult.ShouldBe(_originalUrl);
+        success.ShouldBe(_originalUrl);
 
         UrlRepositoryMock
             .Verify(urlRepository => urlRepository.GetOriginalUrlByShortCodeAsync(_shortCode), Times.Once);

@@ -100,16 +100,10 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
         return _dbContext.Urls.AnyAsync(u => u.Id == urlId);
     }
 
-    public virtual async Task AddUrlAsync(UrlEntity urlEntity)
-    {
-        await _dbContext.Urls.AddAsync(urlEntity);
-        _memoryCache.Remove(CacheKeys.Urls);
-    }
-
     public virtual void AddUrl(UrlEntity urlEntity)
     {
         _dbContext.Urls.Add(urlEntity);
-        _memoryCache.Remove(CacheKeys.Urls);
+        //_memoryCache.Remove(CacheKeys.Urls);
     }
 
     public virtual Task<bool> IsUserOwnsUrlAsync(Guid userId, Guid urlId)
