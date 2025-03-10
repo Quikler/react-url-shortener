@@ -23,7 +23,6 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
 
         if (rows > 0)
         {
-            //_memoryCache.Remove(CacheKeys.Urls);
             _memoryCache.Remove($"{CacheKeys.UrlId}-{urlId}");
         }
 
@@ -32,6 +31,9 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
 
     public virtual async Task<PaginationDto<UrlDto>> GetAllUrlDtoAsync(int pageNumber, int pageSize)
     {
+        pageNumber = Math.Max(1, pageNumber);
+        pageSize = Math.Max(1, pageSize);
+
         var query = _dbContext.Urls.AsNoTracking();
 
         var totalCount = await query.CountAsync();
@@ -44,26 +46,6 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
             .ToListAsync();
 
         return urls.ToPagination(u => u, totalCount, totalPages, pageNumber, pageSize);
-
-        // PaginationDto<UrlDto>? urls = await _memoryCache.GetOrCreateAsync(CacheKeys.Urls, async entry =>
-        // {
-        //     entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
-
-        //     var query = _dbContext.Urls.AsNoTracking();
-
-        //     var totalCount = await query.CountAsync();
-        //     var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
-        //     var urls = await query
-        //         .Skip((pageNumber - 1) * pageSize)
-        //         .Take(pageSize)
-        //         .Select(UrlEntityProjection.UrlDto)
-        //         .ToListAsync();
-
-        //     return urls.ToPagination(u => u, totalCount, totalPages, pageNumber, pageSize);
-        // });
-
-        // return urls ?? PaginationDto<UrlDto>.Empty;
     }
 
     public virtual async Task<UrlInfoDto?> GetUrlInfoDtoAsync(Guid urlId)
@@ -103,7 +85,6 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
     public virtual void AddUrl(UrlEntity urlEntity)
     {
         _dbContext.Urls.Add(urlEntity);
-        //_memoryCache.Remove(CacheKeys.Urls);
     }
 
     public virtual Task<bool> IsUserOwnsUrlAsync(Guid userId, Guid urlId)
