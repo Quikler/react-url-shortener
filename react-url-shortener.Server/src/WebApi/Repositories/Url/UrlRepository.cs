@@ -94,6 +94,12 @@ public class UrlRepository(AppDbContext dbContext, IMemoryCache memoryCache) : I
 
     public virtual async Task<bool> IsUserOwnerOrAdminAsync(Guid userId, Guid urlId, string[] roles)
     {
+        var exist = await IsUrlByIdExistAsync(urlId);
+        if (!exist)
+        {
+            return false;
+        }
+
         return roles.Contains("Admin") || await IsUserOwnsUrlAsync(userId, urlId);
     }
 }

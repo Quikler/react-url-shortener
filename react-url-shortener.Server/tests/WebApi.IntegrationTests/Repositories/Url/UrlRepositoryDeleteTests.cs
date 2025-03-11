@@ -6,7 +6,7 @@ using Shouldly;
 using WebApi.Repositories.Url;
 using WebApi.Services.Caching;
 
-namespace WebApi.UnitTests.Repositories.Url;
+namespace WebApi.IntegrationTests.Repositories.Url;
 
 [Collection("SharedTestUrlCollection")]
 public class UrlRepositoryDeleteTests(BaseUrlRepositoryTests baseUrlRepositoryTests) : IAsyncLifetime

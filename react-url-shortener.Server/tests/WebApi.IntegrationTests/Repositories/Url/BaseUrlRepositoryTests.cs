@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using WebApi.Repositories.Url;
 
-namespace WebApi.UnitTests.Repositories.Url;
+namespace WebApi.IntegrationTests.Repositories.Url;
 
 public class BaseUrlRepositoryTests : IAsyncLifetime
 {
@@ -14,17 +14,13 @@ public class BaseUrlRepositoryTests : IAsyncLifetime
     public IMemoryCache MemoryCache { get; }
     public Fixture Fixture { get; }
 
-    private readonly string _connectionString;
-
     public BaseUrlRepositoryTests()
     {
         Fixture = new Fixture();
         Fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _connectionString = $"Data Source={Guid.NewGuid()}";
-
         var dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlite(_connectionString)
+            .UseSqlite($"Data Source={Guid.NewGuid()}")
             .Options;
 
         DbContext = new AppDbContext(dbContextOptions);

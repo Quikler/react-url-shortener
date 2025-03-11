@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using Shouldly;
 using WebApi.Contracts;
+using WebApi.Contracts.V1.Responses;
 using WebApi.Contracts.V1.Responses.Url;
 using WebApi.IntegrationTests.Abstractions;
 using WebApi.IntegrationTests.Extensions;
@@ -32,10 +33,10 @@ public class GetUrlsShortenerTests(IntegrationTestWebApplicationFactory factory)
         // Assert
         getAllResponse.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
 
-        var urls = await getAllResponse.Content.ReadFromJsonAsync<UrlResponse[]>();
+        var urls = await getAllResponse.Content.ReadFromJsonAsync<PaginationResponse<UrlResponse>>();
         urls.ShouldNotBeNull();
-        urls.Length.ShouldBe(numberOfUrls);
-        urls.ShouldBe(urlResponses);
+        urls.Items.Count().ShouldBe(numberOfUrls);
+        urls.Items.ShouldBe(urlResponses);
     }
 
     [Fact]

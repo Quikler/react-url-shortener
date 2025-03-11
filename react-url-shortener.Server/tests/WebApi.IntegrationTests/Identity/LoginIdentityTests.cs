@@ -6,6 +6,7 @@ using WebApi.Contracts.V1.Responses;
 using WebApi.Contracts.V1.Responses.Identity;
 using WebApi.IntegrationTests.Abstractions;
 using WebApi.IntegrationTests.Extensions;
+using WebApi.Services.Identity;
 
 namespace WebApi.IntegrationTests.Identity;
 
@@ -45,7 +46,7 @@ public class LoginIdentityTests(IntegrationTestWebApplicationFactory factory) : 
 
         var content = await loginReponse.Content.ReadFromJsonAsync<FailureResponse>();
         content.ShouldNotBeNull();
-        content.Errors.ShouldContain(InvalidUsernameOrPasswordMessage);
+        content.Errors.ShouldContain(IdentityServiceMessages.INVALID_USERNAME_OR_PASSWORD);
     }
 
     [Fact]
@@ -62,6 +63,6 @@ public class LoginIdentityTests(IntegrationTestWebApplicationFactory factory) : 
 
         var content = await loginReponse.Content.ReadFromJsonAsync<FailureResponse>();
         content.ShouldNotBeNull();
-        content.Errors.ShouldContain(InvalidUsernameOrPasswordMessage);
+        content.Errors.ShouldContain(IdentityServiceMessages.INVALID_USERNAME_OR_PASSWORD);
     }
 }
