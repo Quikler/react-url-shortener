@@ -21,13 +21,13 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    
     "baseUrl": "./",
     "paths": {
       "@src/*": ["src/*"],
       "@components/*": ["src/components/*"],
       "@services/*": ["src/services/*"],
-    }
-  },
-  "include": ["src"]
+    },
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+  }
 }
