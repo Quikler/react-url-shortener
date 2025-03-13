@@ -1,6 +1,6 @@
-import Button from "@src/components/ui/Button";
+import Button from "@src/components/ui/Buttons/Button";
 import ErrorMessage from "@src/components/ui/ErrorMessage";
-import Input from "@src/components/ui/Input";
+import Input from "@src/components/ui/Inputs/Input";
 import { useToast } from "@src/hooks/useToast";
 import { handleError } from "@src/utils/helpers";
 import { useForm } from "react-hook-form";

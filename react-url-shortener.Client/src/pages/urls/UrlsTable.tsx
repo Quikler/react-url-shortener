@@ -8,7 +8,7 @@ import { useAuth } from "@src/hooks/useAuth";
 import { UrlResponse } from "@src/services/api/models/Url";
 import { handleError } from "@src/utils/helpers";
 import { useToast } from "@src/hooks/useToast";
-import Button from "@src/components/ui/Button";
+import Button from "@src/components/ui/Buttons/Button";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 
 type UrlsTableProps = {

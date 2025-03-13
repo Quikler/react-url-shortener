@@ -1,6 +1,6 @@
-import Button from "@src/components/ui/Button";
-import Input from "@src/components/ui/Input";
-import Label from "@src/components/ui/Label";
+import Button from "@src/components/ui/Buttons/Button";
+import Input from "@src/components/ui/Inputs/Input";
+import Label from "@src/components/ui/Labels/Label";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@src/components/ui/ErrorMessage";

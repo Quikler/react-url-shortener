@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+.link-primary {
+  @apply text-blue-500 hover:text-blue-600;
+}
+
+.link-secondary {
+	@apply text-blue-300 hover:text-blue-400;
+}
+
+.link-default {
+	@apply font-bold;
+}

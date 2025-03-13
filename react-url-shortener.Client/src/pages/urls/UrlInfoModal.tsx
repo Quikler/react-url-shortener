@@ -1,5 +1,5 @@
-import Button from "@src/components/ui/Button";
-import ButtonLink from "@src/components/ui/ButtonLink";
+import Button from "@src/components/ui/Buttons/Button";
+import ButtonLink from "@src/components/ui/Buttons/ButtonLink";
 import Modal from "@src/components/ui/Modal";
 import { useAuth } from "@src/hooks/useAuth";
 import { UrlResponse } from "@src/services/api/models/Url";

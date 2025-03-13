@@ -1,4 +1,4 @@
-import Button from "@src/components/ui/Button";
+import Button from "@src/components/ui/Buttons/Button";
 import { AboutService } from "@src/services/api/AboutService";
 import AdminComponent from "@src/components/HOC/AdminComponent";
 import { useEffect, useReducer, useRef, useState } from "react";

@@ -1,7 +1,7 @@
-import Button from "@src/components/ui/Button";
+import Button from "@src/components/ui/Buttons/Button";
 import ErrorMessage from "@src/components/ui/ErrorMessage";
-import Input from "@src/components/ui/Input";
-import Label from "@src/components/ui/Label";
+import Input from "@src/components/ui/Inputs/Input";
+import Label from "@src/components/ui/Labels/Label";
 import { useAuth } from "@src/hooks/useAuth";
 import { useToast } from "@src/hooks/useToast";
 import { handleError } from "@src/utils/helpers";
@@ -86,7 +86,7 @@ const SignupForm = () => {
         />
         <ErrorMessage>{errors.confirmPassword?.message}</ErrorMessage>
       </div>
-      <Button className="w-full">Sign in</Button>
+      <Button className="w-full">Sign up</Button>
       <p className="text-gray-800 text-sm text-center">
         Already have an account?
         <Link

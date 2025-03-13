@@ -17,7 +17,7 @@ function getVariantStyle<T extends { variant?: string }>(
     }
   }
 
-  throw new Error(getVariantStyle.name);
+  return "";
 }
 
 const useVariant = (

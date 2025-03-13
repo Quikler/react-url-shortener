@@ -1,6 +1,6 @@
 import Exit from "@src/components/svgr/Exit";
-import ButtonLink from "@src/components/ui/ButtonLink";
-import CustomLink from "@src/components/ui/CustomLink";
+import ButtonLink from "@src/components/ui/Buttons/ButtonLink";
+import CustomLink from "@src/components/ui/Links/CustomLink";
 import { useAuth } from "@src/hooks/useAuth";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
