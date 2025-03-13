@@ -9,7 +9,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ variant = "primary", className, ...rest }, ref) => {
     const v = useInputVariant(variant);
-    return <input {...rest} ref={ref} className={twMerge(v)} />;
+    return <input {...rest} ref={ref} className={twMerge(className, v)} />;
   }
 );
 
