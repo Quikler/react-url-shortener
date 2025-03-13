@@ -16,7 +16,7 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
   const [type, setType] = useState<ToastType>("success");
   const [isVisible, setIsVisible] = useState(false);
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleClose = () => timeoutRef.current && clearTimeout(timeoutRef.current);
 
   const setToast = (msg: string, type: ToastType) => {

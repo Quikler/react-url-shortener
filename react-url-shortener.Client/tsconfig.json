@@ -11,6 +11,8 @@
     "moduleDetection": "force",
     "esModuleInterop": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "lib": ["ES2016", "dom"],
+    "types": ["node"]
   }
 }

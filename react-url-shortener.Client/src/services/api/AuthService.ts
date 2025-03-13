@@ -1,4 +1,4 @@
-import api from "@services/axios/instance";
+import api from "@src/services/axios/instance";
 import {
   AuthSuccessResponse,
   LoginRequest,
