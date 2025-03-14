@@ -1,6 +1,6 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
-import useInputVariant from "./useInputVariant";
+import getInputVariant from "./getInputVariant";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: "primary" | "secondary";
@@ -8,7 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ variant = "primary", className, ...rest }, ref) => {
-    const v = useInputVariant(variant);
+    const v = getInputVariant(variant);
     return <input {...rest} ref={ref} className={twMerge(className, v)} />;
   }
 );

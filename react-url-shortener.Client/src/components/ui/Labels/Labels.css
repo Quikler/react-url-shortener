@@ -1,5 +1,5 @@
 @import "tailwindcss";
 
 .label-default {
-    @apply text-gray-800 text-sm block
+  @apply text-gray-800 text-sm block;
 }

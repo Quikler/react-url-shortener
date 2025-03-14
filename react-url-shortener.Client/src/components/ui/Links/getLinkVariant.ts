@@ -1,8 +1,8 @@
-import useVariant from "@src/hooks/useVariant";
+import getVariant from "@src/utils/helpers";
 import "./Links.css"
 
-const useLinkVariant = (variant: string) => {
-  const v = useVariant(
+const getLinkVariant = (variant: string) => {
+  const v = getVariant(
     [
       {
         key: "primary",
@@ -20,4 +20,4 @@ const useLinkVariant = (variant: string) => {
   return v;
 };
 
-export default useLinkVariant;
+export default getLinkVariant;

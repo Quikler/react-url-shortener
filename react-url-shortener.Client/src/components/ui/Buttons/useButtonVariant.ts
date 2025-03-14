@@ -1,7 +1,7 @@
-import useVariant from "@src/hooks/useVariant";
+import getVariant from "@src/utils/helpers";
 
-const useButtonVariant = (variant: string) => {
-  const v = useVariant(
+const getButtonVariant = (variant: string) => {
+  const v = getVariant(
     [
       {
         key: "primary",
@@ -27,4 +27,4 @@ const useButtonVariant = (variant: string) => {
   return v;
 };
 
-export default useButtonVariant;
+export default getButtonVariant;

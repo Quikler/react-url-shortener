@@ -1,8 +1,8 @@
-import useVariant from "@src/hooks/useVariant";
+import getVariant from "@src/utils/helpers";
 import "./Inputs.css";
 
 const useInputVariant = (variant: string) => {
-  const v = useVariant(
+  const v = getVariant(
     [
       {
         key: "primary",

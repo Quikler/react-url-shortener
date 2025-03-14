@@ -1,13 +1,13 @@
 import { twMerge } from "tailwind-merge";
 import "./Buttons.css";
-import useButtonVariant from "./useButtonVariant";
+import getButtonVariant from "./useButtonVariant";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "danger" | "info";
 };
 
 const Button = ({ variant = "primary", className, ...rest }: ButtonProps) => {
-  const v = useButtonVariant(variant);
+  const v = getButtonVariant(variant);
   return <button {...rest} className={twMerge(className, v)} />;
 };
 

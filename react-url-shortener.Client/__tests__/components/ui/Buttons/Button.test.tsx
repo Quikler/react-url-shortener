@@ -2,8 +2,6 @@ import Button from "@src/components/ui/Buttons/Button";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-//jest.mock("@components/ui/Buttons/useButtonVariant", () => (variant: string) => `mocked-${variant}`);
-
 describe("Button", () => {
   it("displays with the correct text", () => {
     render(<Button>Test</Button>);
