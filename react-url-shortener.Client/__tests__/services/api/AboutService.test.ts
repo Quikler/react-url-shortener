@@ -34,13 +34,19 @@ describe("AboutService", () => {
   });
 
   // Test 3: getAbout - Cancel error (should not throw)
-  // it("getAbout does not throw on cancel error", async () => {
-  //   // Mock a canceled GET request to /about
-  //   mockAxios.onGet("/about").abortRequest();
+  it("getAbout does not throw on cancel error", async () => {
+    // Mock a canceled GET request to /about
+    const abortController = new AbortController();
 
-  //   const result = await AboutService.getAbout();
-  //   expect(result).toBeUndefined();
-  // });
+    mockAxios.onGet("/about").reply(() => {
+      // Simulate a request that will be canceled
+      abortController.abort();
+      return [200, { message: "Got" }];
+    });
+
+    const result = await AboutService.getAbout({ signal: abortController.signal });
+    expect(result).toBeUndefined();
+  });
 
   // Test 4: updateAbout - Success
   it("updateAbout returns data on success", async () => {
@@ -69,13 +75,19 @@ describe("AboutService", () => {
   });
 
   // Test 6: updateAbout - Cancel error (should not throw)
-  // it("updateAbout does not throw on cancel error", async () => {
-  //   const newAbout = "Updated about content";
+  it("updateAbout does not throw on cancel error", async () => {
+    const newAbout = "Updated about content";
 
-  //   // Mock a canceled PUT request to /about
-  //   mockAxios.onPut(`/about?newAbout=${encodeURIComponent(newAbout)}`).abortRequest();
+    const abortController = new AbortController();
 
-  //   const result = await AboutService.updateAbout(newAbout);
-  //   expect(result).toBeUndefined();
-  // });
+    // Mock the PUT request with the signal from the AbortController
+    mockAxios.onPut(`/about?newAbout=${encodeURIComponent(newAbout)}`).reply(() => {
+      // Simulate a request that will be canceled
+      abortController.abort();
+      return [200, { message: "Updated" }];
+    });
+
+    const result = await AboutService.updateAbout(newAbout, { signal: abortController.signal });
+    expect(result).toBeUndefined();
+  });
 });
