@@ -1,46 +1,28 @@
 import api from "@src/services/axios/instance";
-import {
-  AuthSuccessResponse,
-  LoginRequest,
-  SignupRequest,
-} from "@src/services/api/models/Auth";
+import { AuthSuccessResponse, LoginRequest, SignupRequest } from "@src/services/api/models/Auth";
 import { AxiosRequestConfig } from "axios";
 import { throwIfErrorNotCancelError } from "@src/utils/helpers";
 import { AuthRoutes } from "./ApiRoutes";
 
 export abstract class AuthService {
-  static async signup(
-    request: SignupRequest,
-    config?: AxiosRequestConfig<any> | undefined
-  ) {
+  static async signup(request: SignupRequest, config?: AxiosRequestConfig<any> | undefined) {
     try {
-      const response = await api.post<AuthSuccessResponse>(
-        AuthRoutes.signup,
-        request,
-        {
-          withCredentials: true,
-          signal: config?.signal,
-        }
-      );
+      const response = await api.post<AuthSuccessResponse>(AuthRoutes.signup, request, {
+        withCredentials: true,
+        signal: config?.signal,
+      });
       return response.data;
     } catch (e: any) {
       throwIfErrorNotCancelError(e);
     }
   }
 
-  static async login(
-    request: LoginRequest,
-    config?: AxiosRequestConfig<any> | undefined
-  ) {
+  static async login(request: LoginRequest, config?: AxiosRequestConfig<any> | undefined) {
     try {
-      const response = await api.post<AuthSuccessResponse>(
-        AuthRoutes.login,
-        request,
-        {
-          withCredentials: true,
-          signal: config?.signal,
-        }
-      );
+      const response = await api.post<AuthSuccessResponse>(AuthRoutes.login, request, {
+        withCredentials: true,
+        signal: config?.signal,
+      });
       return response.data;
     } catch (e) {
       throwIfErrorNotCancelError(e);
@@ -49,7 +31,7 @@ export abstract class AuthService {
 
   static async logout(config?: AxiosRequestConfig<any> | undefined) {
     try {
-      const response = await api.post<AuthSuccessResponse>(
+      const response = await api.post(
         AuthRoutes.logout,
         {},
         { withCredentials: true, signal: config?.signal }
