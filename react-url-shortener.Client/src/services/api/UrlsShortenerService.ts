@@ -2,16 +2,17 @@ import { throwIfErrorNotCancelError } from "@src/utils/helpers";
 import { AxiosRequestConfig } from "axios";
 import api from "@src/services/axios/instance";
 import { UrlRoutes } from "./ApiRoutes";
-import { UrlResponse } from "@src/services/api/models/Url";
+import { UrlInfoResponse, UrlResponse } from "@src/services/api/models/Url";
+import { PaginationResponse } from "./models/Shared";
 
 export abstract class UrlsShortenerService {
   static async getAll(
-    pageNumber: number = 5,
+    pageNumber: number = 1,
     pageSize: number = 5,
     config?: AxiosRequestConfig<any> | undefined
   ) {
     try {
-      const response = await api.get(
+      const response = await api.get<PaginationResponse<UrlResponse>>(
         `${UrlRoutes.base}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
         config
       );
@@ -23,7 +24,7 @@ export abstract class UrlsShortenerService {
 
   static async getInfo(urlId: string, config?: AxiosRequestConfig<any> | undefined) {
     try {
-      const response = await api.get(`${UrlRoutes.base}/${urlId}`, config);
+      const response = await api.get<UrlInfoResponse>(`${UrlRoutes.base}/${urlId}`, config);
       return response.data;
     } catch (e: any) {
       throwIfErrorNotCancelError(e);
