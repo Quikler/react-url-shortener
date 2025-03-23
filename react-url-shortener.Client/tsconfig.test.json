@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-      "module": "CommonJS", // ✅ Jest uses CommonJS, not ES Modules
+      "module": "CommonJS", 
       "baseUrl": "./",
       "paths": {
         "@src/*": ["src/*"],

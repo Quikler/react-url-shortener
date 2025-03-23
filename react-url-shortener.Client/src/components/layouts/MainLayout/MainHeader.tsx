@@ -1,5 +1,6 @@
 import Exit from "@src/components/svgr/Exit";
 import ButtonLink from "@src/components/ui/Buttons/ButtonLink";
+import SwgButton from "@src/components/ui/Buttons/SwgButton";
 import CustomLink from "@src/components/ui/Links/CustomLink";
 import { useAuth } from "@src/hooks/useAuth";
 import { useState } from "react";
@@ -47,9 +48,9 @@ const MainHeader = () => {
               <div className="text-white bg-blue-500 rounded-full py-2 px-3">
                 <p>Hello, {user?.username}</p>
               </div>
-              <button onClick={handleLogoutClick}>
+              <SwgButton onClick={handleLogoutClick}>
                 <Exit fill="white" cursor="pointer" />
-              </button>
+              </SwgButton>
             </>
           ) : (
             <>

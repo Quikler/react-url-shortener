@@ -9,7 +9,7 @@ const UrlsTableHeader = ({ columns }: UrlsTableHeaderProps) => (
         <th
           key={index}
           scope="col"
-          className={`p-5 text-left text-sm leading-6 font-semibold capitalize`}
+          className={`p-5 text-left text-sm leading-6 font-semibold capitalize border-b border-gray-600`}
         >
           {column}
         </th>
