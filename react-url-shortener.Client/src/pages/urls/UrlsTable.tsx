@@ -10,6 +10,7 @@ import { handleError } from "@src/utils/helpers";
 import { useToast } from "@src/hooks/useToast";
 import Button from "@src/components/ui/Buttons/Button";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
+import CustomLink from "@src/components/ui/Links/CustomLink";
 
 type UrlsTableProps = {
   onShortUrlClick: (url: UrlResponse) => void;
@@ -38,8 +39,8 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
   };
 
   return (
-    <>
-      <table className="w-full border-separate">
+    <div className="flex flex-col gap-2">
+      <table className="w-full rounded-2xl bg-gradient-to-r from-gray-700 to-gray-900 border-separate">
         <UrlsTableHeader columns={["Id", "Original URL", "Short URL"]} />
         <tbody className="divide-y-1">
           {urls.map((url) => (
@@ -55,12 +56,12 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
 
                 if (index === 1) {
                   return (
-                    <Link
+                    <CustomLink
                       to={url.urlOriginal}
                       className="px-2 py-1 text-blue-400 hover:text-blue-500 rounded"
                     >
                       {content}
-                    </Link>
+                    </CustomLink>
                   );
                 }
 
@@ -78,7 +79,7 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
                     <div className="flex justify-between">
                       {link}
                       {url.userId === user?.id || hasRole(Roles.Admin) ? (
-                        <Garbage onClick={() => handleDeleteUrl(url.id)} cursor="pointer" />
+                        <Garbage fill="white" onClick={() => handleDeleteUrl(url.id)} cursor="pointer" />
                       ) : (
                         <></>
                       )}
@@ -94,17 +95,17 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
       </table>
       <div className="flex items-center gap-2 justify-center">
         <Button disabled={pageNumber <= 1} onClick={handleBackClick}>
-          Back
+          &lt;
         </Button>
         <p>total count: {totalCount}</p>
         <p>total pages: {totalPages}</p>
         <p>page number: {pageNumber}</p>
         <p>page size: {pageSize}</p>
         <Button disabled={pageNumber >= totalPages} onClick={handleForwardClick}>
-          Forward
+          &gt;
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 

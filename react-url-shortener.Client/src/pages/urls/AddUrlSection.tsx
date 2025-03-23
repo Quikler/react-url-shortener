@@ -35,7 +35,7 @@ const AddUrlSection = ({ className, ...rest }: AddUrlSectionProps) => {
   return (
     <div
       {...rest}
-      className={twMerge("w-2xl p-8 bg-white shadow rounded-2xl border-black", className)}
+      className={twMerge("text-white w-2xl p-8 bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 shadow rounded-2xl border-black", className)}
     >
       <form onSubmit={handleAddUrlSubmit} className="flex flex-col gap-3">
         <p className="text-3xl text-left">Add new url</p>

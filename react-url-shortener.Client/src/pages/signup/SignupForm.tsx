@@ -87,7 +87,7 @@ const SignupForm = () => {
         <ErrorMessage>{errors.confirmPassword?.message}</ErrorMessage>
       </div>
       <Button className="w-full">Sign up</Button>
-      <p className="text-gray-800 text-sm text-center">
+      <p className="text-sm text-center">
         Already have an account?
         <Link
           to="/login"

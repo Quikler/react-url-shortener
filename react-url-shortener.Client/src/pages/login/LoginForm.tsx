@@ -42,7 +42,7 @@ const LoginForm = () => {
             required: "Username is required",
           })}
           type="text"
-          className="w-full"
+          className="w-full text-white"
           placeholder="Enter username"
         />
         <ErrorMessage>{errors.username?.message}</ErrorMessage>
@@ -55,13 +55,13 @@ const LoginForm = () => {
             minLength: { value: 8, message: "Password must be at least 8 characters long" },
           })}
           type="password"
-          className="w-full"
+          className="w-full text-white"
           placeholder="Enter password"
         />
         <ErrorMessage>{errors.password?.message}</ErrorMessage>
       </div>
       <Button className="w-full">Sign in</Button>
-      <p className="text-gray-800 text-sm text-center">
+      <p className="text-sm text-center">
         Don't have an account?
         <Link
           to="/signup"

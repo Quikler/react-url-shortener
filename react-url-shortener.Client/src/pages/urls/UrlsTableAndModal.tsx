@@ -19,7 +19,7 @@ const UrlsTableAndModal = () => {
         onClose={() => setIsModalOpen(false)}
         selectedUrl={selectedUrl}
       />
-      <div className="bg-white shadow rounded-2xl border-black">
+      <div className="text-white shadow rounded-2xl border-black">
         <UrlsTable onShortUrlClick={handleShortUrlClick} />
       </div>
     </>

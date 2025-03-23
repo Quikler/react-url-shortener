@@ -9,7 +9,7 @@ type UrlsTableRowProps = {
 
 const UrlsTableRow = ({ url, columns, isHighlighted, wrapper }: UrlsTableRowProps) => {
   return (
-    <tr className={isHighlighted ? "bg-gray-100" : "bg-white"}>
+    <tr className={`${isHighlighted ? 'bg-blue-900/40' : 'bg-transparent'}`}>
       {columns.map((column, index) => {
         const value = url[column as keyof UrlResponse] as string;
         const content = wrapper?.(index, value) ?? value;
@@ -17,7 +17,7 @@ const UrlsTableRow = ({ url, columns, isHighlighted, wrapper }: UrlsTableRowProp
         return (
           <td
             key={index}
-            className="p-2 break-words text-sm leading-6 font-medium text-gray-900"
+            className="p-2 break-words text-sm leading-6 font-medium"
           >
             {content}
           </td>
