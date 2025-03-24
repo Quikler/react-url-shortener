@@ -69,7 +69,7 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
                   const link = (
                     <button
                       onClick={() => onShortUrlClick(url)}
-                      className="cursor-pointer link-primary link-default"
+                      className="border-b-2 border-transparent cursor-pointer link-primary link-default"
                     >
                       {content}
                     </button>
@@ -79,8 +79,8 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
                     <div className="flex justify-between gap-2">
                       {link}
                       {url.userId === user?.id || hasRole(Roles.Admin) ? (
-                        <SwgButton>
-                          <Garbage fill="white" role="button" aria-label="Delete url" onClick={() => handleDeleteUrl(url.id)} cursor="pointer" />
+                        <SwgButton onClick={() => handleDeleteUrl(url.id)}>
+                          <Garbage fill="white" role="button" aria-label="Delete url" cursor="pointer" />
                           </SwgButton>
                       ) : (
                         <></>
