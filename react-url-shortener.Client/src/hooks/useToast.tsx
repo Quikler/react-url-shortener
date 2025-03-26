@@ -15,16 +15,32 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
   const [message, setMessage] = useState<string | null>(null);
   const [type, setType] = useState<ToastType>("success");
   const [isVisible, setIsVisible] = useState(false);
+  const [isToastInDOM, setIsToastInDOM] = useState(false);
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleClose = () => timeoutRef.current && clearTimeout(timeoutRef.current);
+  const handleClose = () => {
+    timeoutRef.current && clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setIsVisible(false);
+      // Wait for the transition duration before removing from DOM
+      setTimeout(() => setIsToastInDOM(false), 1000); // 1000ms to match the transition duration
+    }, 2000); // Display duration of the toast
+  }
 
   const setToast = (msg: string, type: ToastType) => {
     timeoutRef.current && clearTimeout(timeoutRef.current);
-    setIsVisible(true);
+    setIsToastInDOM(true);
     setMessage(msg);
     setType(type);
-    timeoutRef.current = setTimeout(() => setIsVisible(false), 2000);
+
+    //setIsVisible(true);
+    setTimeout(() => setIsVisible(true), 10);
+
+    timeoutRef.current = setTimeout(() => {
+      setIsVisible(false);
+      // Wait for the transition duration before removing from DOM
+      setTimeout(() => setIsToastInDOM(false), 1000); // 1000ms to match the transition duration
+    }, 2000); // Display duration of the toast
   };
 
   const success = (msg: string) => setToast(msg, "success");
@@ -39,13 +55,13 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
 
   return (
     <ToastContext.Provider value={value}>
-      <Toast
+      {isToastInDOM && <Toast
         onClose={handleClose}
         isVisible={isVisible}
         setIsVisible={setIsVisible}
         type={type}
         message={message}
-      />
+      />}
       {children}
     </ToastContext.Provider>
   );

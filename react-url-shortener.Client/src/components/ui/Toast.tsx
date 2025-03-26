@@ -3,7 +3,7 @@ import CheckIcon from "../svgr/CheckIcon";
 import Close from "../svgr/Close";
 import ErrorIcon from "../svgr/ErrorIcon";
 import WarningIcon from "../svgr/WarningIcon";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 export type ToastType = "success" | "danger" | "warning";
 
@@ -37,37 +37,6 @@ const Toast = ({
 }: ToastProps) => {
   const divRef = useRef<HTMLDivElement>(null);
 
-  const [isVisibilityCollapsed, setIsVisibilityCollapsed] = useState(true);
-
-  const handleTransitionEnd = () => {
-    const element = divRef.current;
-    if (element?.classList.contains("opacity-0")) {
-      setIsVisibilityCollapsed(true);
-    }
-  };
-
-  const handleTransitionStart = () => {
-    const element = divRef.current;
-    if (element?.classList.contains("opacity-100")) {
-      setIsVisibilityCollapsed(false);
-    }
-  }
-
-  useEffect(() => {
-    const element = divRef.current;
-    if (element) {
-      // Add the event listener for transition end
-      element.addEventListener("transitionend", handleTransitionEnd);
-      element.addEventListener("transitionstart", handleTransitionStart);
-
-      return () => {
-        // Cleanup the event listener on component unmount
-        element.removeEventListener("transitionend", handleTransitionEnd);
-        element.removeEventListener("transitionstart", handleTransitionStart);
-      };
-    }
-  }, []);
-
   const handleClose = () => {
     setIsVisible(false);
     onClose();
@@ -76,9 +45,8 @@ const Toast = ({
   return (
     <div ref={divRef}
       className={twMerge(
-        `fixed top-24 right-12 z-[999] flex items-center w-full max-w-xs p-4 rounded-lg shadow-sm text-gray-400 bg-gray-800 transition-opacity duration-1000 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        } ${isVisibilityCollapsed ? "collapse" : "visible"}`,
+        `fixed top-24 right-12 z-[999] flex items-center w-full max-w-xs p-4 rounded-lg shadow-sm text-gray-400 bg-gray-800 transition-opacity duration-1000 ${isVisible ? "opacity-100" : "opacity-0"
+        }`,
         className
       )}
       role="alert"
