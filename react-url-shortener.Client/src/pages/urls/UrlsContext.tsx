@@ -30,8 +30,8 @@ export const UrlsContextProvider = ({ children }: UrlsContextProviderProps) => {
   const [urls, setUrls] = useState<UrlResponse[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [pageNumber, setPageNumber] = useState(0);
-  const [pageSize, setPageSize] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
 
   const fetchUrls = async (pageNumber: number = 1, pageSize: number = 5, signal?: AbortSignal) => {
     try {
@@ -71,6 +71,10 @@ export const UrlsContextProvider = ({ children }: UrlsContextProviderProps) => {
           setTotalPages((prev) => prev + 1);
         }
 
+        if (pageNumber === 0) {
+          setPageNumber((prev) => prev + 1);
+        }
+
         const isNewUrlsLenghtBiggerThanPageSize = urls.length + 1 > pageSize;
         const isLastPage = pageNumber === totalPages;
         const isCurrentUserCreator = urlResponse.userId === user?.id;
@@ -79,7 +83,7 @@ export const UrlsContextProvider = ({ children }: UrlsContextProviderProps) => {
           if (isNewUrlsLenghtBiggerThanPageSize) {
             await fetchUrls(totalPages + 1, 5);
           } else {
-            await fetchUrls(totalPages, 5);
+            await fetchUrls(totalPages === 0 ? 1 : totalPages, 5);
           }
         }
 
