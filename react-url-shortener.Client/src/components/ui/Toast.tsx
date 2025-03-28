@@ -6,7 +6,7 @@ import WarningIcon from "../svgr/WarningIcon";
 
 export type ToastType = "success" | "danger" | "warning";
 
-type ToastProps = React.HTMLAttributes<HTMLDivElement> & {
+export type ToastProps = React.HTMLAttributes<HTMLDivElement> & {
   message?: string | null;
   type: ToastType;
   isVisible: boolean;
@@ -35,7 +35,7 @@ const Toast = ({
 
   return (
     <div className={twMerge(
-      `fixed top-24 right-12 z-[999] flex items-center w-full max-w-xs p-4 rounded-lg shadow-sm text-gray-400 bg-gray-800 transition-opacity duration-1000 ${isVisible ? "opacity-100" : "opacity-0"
+      `z-[999] flex items-center w-full max-w-xs p-4 rounded-lg shadow-sm text-gray-400 bg-gray-800 transition-opacity duration-1000 ${isVisible ? "opacity-100" : "opacity-0"
       }`,
       className
     )}
@@ -43,7 +43,7 @@ const Toast = ({
       {...rest}
     >
       {GetToastIcon(type)}
-      <div className="ms-3 text-sm font-normal break-words">{message}</div>
+      <div className="ms-3 mr-4 text-sm font-normal break-words">{message}</div>
       <button
         onClick={onClose}
         type="button"

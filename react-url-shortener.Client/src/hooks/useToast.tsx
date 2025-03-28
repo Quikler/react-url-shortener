@@ -1,5 +1,6 @@
-import React, { useContext, useRef, useState } from "react";
-import Toast, { ToastType } from "@src/components/ui/Toast";
+import React, { useContext, useEffect, useState } from "react";
+import Toast, { ToastProps, ToastType } from "@src/components/ui/Toast";
+import { generateUUID } from "@src/utils/helpers";
 
 type ToastContextType = {
   success: (msg: string) => void;
@@ -11,38 +12,68 @@ const ToastContext = React.createContext({} as ToastContextType);
 
 type ToastContextProviderProps = { children: React.ReactNode };
 
-export const ToastContextProvider = ({ children }: ToastContextProviderProps) => {
-  const [message, setMessage] = useState<string | null>(null);
-  const [type, setType] = useState<ToastType>("success");
-  const [isVisible, setIsVisible] = useState(false);
-  const [isToastInDOM, setIsToastInDOM] = useState(false);
+type ToastPropsExtended = ToastProps & {
+  toastId: string;
+  completelyInvisible: boolean;
+};
 
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleClose = () => {
-    setIsVisible(false);
-    timeoutRef.current && clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      setIsVisible(false);
-      // Wait for the transition duration before removing from DOM
-      setTimeout(() => setIsToastInDOM(false), 1000); // 1000ms to match the transition duration
-    }, 2000); // Display duration of the toast
-  }
+export const ToastContextProvider = ({ children }: ToastContextProviderProps) => {
+  console.count("Render");
+  const [toastsProps, setToastsProps] = useState<ToastPropsExtended[]>([]);
 
   const setToast = (msg: string, type: ToastType) => {
-    timeoutRef.current && clearTimeout(timeoutRef.current);
-    setIsToastInDOM(true);
-    setMessage(msg);
-    setType(type);
+    const toastId = generateUUID();
+    console.log("Setting toast:", toastId);
+    const newToastProps: ToastPropsExtended = {
+      message: msg,
+      type: type,
+      isVisible: false,
+      onClose: () => { },
+      toastId: toastId,
+      completelyInvisible: false,
+    };
 
-    //setIsVisible(true);
-    setTimeout(() => setIsVisible(true), 10);
+    // Add the new toast
+    setToastsProps(prevToasts => [...prevToasts, newToastProps]);
 
-    timeoutRef.current = setTimeout(() => {
-      setIsVisible(false);
-      // Wait for the transition duration before removing from DOM
-      setTimeout(() => setIsToastInDOM(false), 1000); // 1000ms to match the transition duration
-    }, 2000); // Display duration of the toast
+    // Make it visible shortly after
+    setTimeout(() => {
+      console.log("Visibility true on toast:", toastId);
+      setToastsProps(prevToasts =>
+        prevToasts.map(t =>
+          t.toastId === toastId ? { ...t, isVisible: true } : t
+        )
+      );
+    }, 10);
+
+    // Hide toast after 2 seconds
+    setTimeout(() => {
+      console.log("Visibility false on toast:", toastId);
+      setToastsProps(prevToasts =>
+        prevToasts.map(t =>
+          t.toastId === toastId ? { ...t, isVisible: false } : t
+        )
+      );
+
+      setTimeout(() => {
+        console.log("Transition pass on toast (completely invisible):", toastId);
+        setToastsProps(prevToasts =>
+          prevToasts.map(t =>
+            t.toastId === toastId ? { ...t, completelyInvisible: true } : t
+          )
+        );
+      }, 1000); // Matches transition duration
+    }, 2000);
   };
+
+  useEffect(() => {
+    if (toastsProps.length === 0) {
+      return;
+    }
+    if (toastsProps.every(t => t.completelyInvisible === true)) {
+      setToastsProps([]);
+    }
+  }, [toastsProps])
 
   const success = (msg: string) => setToast(msg, "success");
   const danger = (msg: string) => setToast(msg, "danger");
@@ -56,15 +87,14 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
 
   return (
     <ToastContext.Provider value={value}>
-      {isToastInDOM && <Toast
-        onClose={handleClose}
-        isVisible={isVisible}
-        type={type}
-        message={message}
-      />}
+      {toastsProps.length !== 0 && <ul className="fixed top-24 right-12 flex flex-col gap-2">
+        {toastsProps.map((value, index) => {
+          return <li key={index}><Toast type={value.type} message={value.message} isVisible={value.isVisible} onClose={value.onClose} /></li>
+        })}
+      </ul>}
       {children}
     </ToastContext.Provider>
-  );
+  )
 };
 
 export const useToast = () => {
