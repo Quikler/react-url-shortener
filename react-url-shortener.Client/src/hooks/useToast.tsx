@@ -19,6 +19,7 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleClose = () => {
+    setIsVisible(false);
     timeoutRef.current && clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setIsVisible(false);
@@ -58,7 +59,6 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
       {isToastInDOM && <Toast
         onClose={handleClose}
         isVisible={isVisible}
-        setIsVisible={setIsVisible}
         type={type}
         message={message}
       />}
