@@ -109,7 +109,7 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
     <ToastContext.Provider value={value}>
       {toastsProps.length !== 0 && <ul className="fixed top-24 right-12 flex flex-col gap-2">
         {toastsProps.map((value, index) => {
-          return <li key={index}><Toast type={value.type} message={value.message} isVisible={value.isVisible} onClose={value.onClose} transitionDuration={value.transitionDuration} /></li>
+          return !value.completelyInvisible && <li key={index}><Toast type={value.type} message={value.message} isVisible={value.isVisible} onClose={value.onClose} transitionDuration={value.transitionDuration} /></li>
         })}
       </ul>}
       {children}
