@@ -19,6 +19,9 @@ type ToastPropsExtended = ToastProps & {
 
 export const ToastContextProvider = ({ children }: ToastContextProviderProps) => {
   console.count("Render");
+  const TOAST_TRANSITION_DURATION = 1000;
+  const TOAST_DISPLAY_LIFETIME = 2000;
+
   const [toastsProps, setToastsProps] = useState<ToastPropsExtended[]>([]);
 
   const setToast = (msg: string, type: ToastType) => {
@@ -28,7 +31,16 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
       message: msg,
       type: type,
       isVisible: false,
-      onClose: () => { },
+      onClose: () => {
+        setToastsProps(prevToasts =>
+          prevToasts.map(t =>
+            t.toastId === toastId ? { ...t, isVisible: false } : t
+          )
+        );
+
+        makeToastCompletelyInvisibleAfterTransitionDuration(toastId);
+      },
+      transitionDuration: TOAST_TRANSITION_DURATION,
       toastId: toastId,
       completelyInvisible: false,
     };
@@ -46,6 +58,10 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
       );
     }, 10);
 
+    fadeOutToastAfterDisplayLifetime(toastId);
+  };
+
+  function fadeOutToastAfterDisplayLifetime(toastId: string) {
     // Hide toast after 2 seconds
     setTimeout(() => {
       console.log("Visibility false on toast:", toastId);
@@ -55,16 +71,20 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
         )
       );
 
-      setTimeout(() => {
-        console.log("Transition pass on toast (completely invisible):", toastId);
-        setToastsProps(prevToasts =>
-          prevToasts.map(t =>
-            t.toastId === toastId ? { ...t, completelyInvisible: true } : t
-          )
-        );
-      }, 1000); // Matches transition duration
-    }, 2000);
-  };
+      makeToastCompletelyInvisibleAfterTransitionDuration(toastId);
+    }, TOAST_DISPLAY_LIFETIME);
+  }
+
+  function makeToastCompletelyInvisibleAfterTransitionDuration(toastId: string) {
+    setTimeout(() => {
+      console.log("Transition pass on toast (completely invisible):", toastId);
+      setToastsProps(prevToasts =>
+        prevToasts.map(t =>
+          t.toastId === toastId ? { ...t, completelyInvisible: true } : t
+        )
+      );
+    }, TOAST_TRANSITION_DURATION); // Matches transition duration
+  }
 
   useEffect(() => {
     if (toastsProps.length === 0) {
@@ -89,7 +109,7 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
     <ToastContext.Provider value={value}>
       {toastsProps.length !== 0 && <ul className="fixed top-24 right-12 flex flex-col gap-2">
         {toastsProps.map((value, index) => {
-          return <li key={index}><Toast type={value.type} message={value.message} isVisible={value.isVisible} onClose={value.onClose} /></li>
+          return <li key={index}><Toast type={value.type} message={value.message} isVisible={value.isVisible} onClose={value.onClose} transitionDuration={value.transitionDuration} /></li>
         })}
       </ul>}
       {children}

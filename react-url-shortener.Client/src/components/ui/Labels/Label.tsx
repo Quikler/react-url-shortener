@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 import "./Labels.css";
-import getVariant from "@src/utils/helpers";
+import { getVariant } from "@src/utils/helpers";
 
 type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
   variant?: "primary";

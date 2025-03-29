@@ -1,4 +1,4 @@
-import getVariant from "@src/utils/helpers";
+import { getVariant } from "@src/utils/helpers";
 
 const getButtonVariant = (variant: string) => {
   const v = getVariant(

@@ -1,4 +1,4 @@
-import getVariant from "@src/utils/helpers";
+import { getVariant } from "@src/utils/helpers";
 import "./Inputs.css";
 
 const useInputVariant = (variant: string) => {

@@ -50,7 +50,7 @@ function getVariantStyle<T extends { variant?: string }>(
   return "";
 }
 
-const getVariant = (
+export const getVariant = (
   variants: {
     key: string | undefined;
     style: string;
@@ -60,9 +60,6 @@ const getVariant = (
 ) => {
   return getVariantStyle(variants, variant, defaultStyle);
 };
-
-export default getVariant;
-
 
 export function generateUUID() { // Public Domain/MIT
   var d = new Date().getTime();//Timestamp

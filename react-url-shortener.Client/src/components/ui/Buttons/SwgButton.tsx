@@ -1,4 +1,4 @@
-import getVariant from "@src/utils/helpers";
+import { getVariant } from "@src/utils/helpers";
 import React from "react";
 import { twMerge } from "tailwind-merge";
 

@@ -11,6 +11,7 @@ export type ToastProps = React.HTMLAttributes<HTMLDivElement> & {
   type: ToastType;
   isVisible: boolean;
   onClose: () => void;
+  transitionDuration: number;
 };
 
 const GetToastIcon = (type: ToastType): JSX.Element => {
@@ -30,12 +31,13 @@ const Toast = ({
   message,
   isVisible,
   onClose,
+  transitionDuration = 1000,
   ...rest
 }: ToastProps) => {
 
   return (
-    <div className={twMerge(
-      `z-[999] flex items-center w-full max-w-xs p-4 rounded-lg shadow-sm text-gray-400 bg-gray-800 transition-opacity duration-1000 ${isVisible ? "opacity-100" : "opacity-0"
+    <div style={{ transitionDuration: `${transitionDuration}ms` }} className={twMerge(
+      `bg-gradient-to-r from-gray-700 to-gray-900 z-[999] flex items-center w-full max-w-xs p-4 rounded-lg shadow-sm text-gray-400 transition-opacity ${isVisible ? "opacity-100" : "opacity-0"
       }`,
       className
     )}
@@ -47,7 +49,7 @@ const Toast = ({
       <button
         onClick={onClose}
         type="button"
-        className="ms-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex items-center justify-center h-8 w-8 text-gray-500 hover:text-white bg-gray-800 hover:bg-gray-700"
+        className="ms-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex items-center justify-center h-8 w-8 text-gray-500 hover:text-white cursor-pointer"
         aria-label="Close"
       >
         <Close stroke="2" className="fill-gray-400" />
