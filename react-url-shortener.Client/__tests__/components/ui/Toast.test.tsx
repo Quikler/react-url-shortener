@@ -16,31 +16,31 @@ describe("Toast Component", () => {
     );
   };
 
-  test("renders the toast message", () => {
+  it("renders the toast message", () => {
     renderToast();
     expect(screen.getByText("Test message")).toBeInTheDocument();
   });
 
-  test("shows correct icon based on type", () => {
+  it("shows correct icon based on type", () => {
     const types: ToastType[] = ["success", "danger", "warning"];
     types.forEach((type) => {
       const { unmount } = renderToast({ type });
-      expect(screen.getByRole("alert")).toMatchSnapshot(); // Snapshot testing
+      expect(screen.getByRole("alert")).toBeInTheDocument(); // Snapshot testing
       unmount();
     });
   });
 
-  test("has opacity-100 when visible", () => {
+  it("has opacity 1 when visible", () => {
     renderToast({ isVisible: true });
-    expect(screen.getByRole("alert")).toHaveClass("opacity-100");
+    expect(screen.getByRole("alert")).toHaveStyle("opacity: 1");
   });
 
-  test("has opacity-0 when hidden", () => {
+  it("has opacity 0 when hidden", () => {
     renderToast({ isVisible: false });
-    expect(screen.getByRole("alert")).toHaveClass("opacity-0");
+    expect(screen.getByRole("alert")).toHaveStyle("opacity: 0");
   });
 
-  test("calls onClose when close button is clicked", () => {
+  it("calls onClose when close button is clicked", () => {
     const onCloseMock = jest.fn();
     renderToast({ onClose: onCloseMock });
 

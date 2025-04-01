@@ -12,11 +12,15 @@ const MainHeader = () => {
   const [isCollapseMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const isLinkActive = (path: string) => {
-    const location = useLocation();
+  function isLinkActive(path: string) {
     return location.pathname === path;
   };
+
+  function toggleMenuOpen() {
+    setIsMenuOpen(!isCollapseMenuOpen)
+  }
 
   const handleLogoutClick = () => {
     logoutUser().then(() => navigate("/signup"));
@@ -29,14 +33,14 @@ const MainHeader = () => {
           id="collapseMenu"
           className={`lg:flex mx-auto ${isCollapseMenuOpen ? "flex justify-center" : "hidden"}`}
         >
-          <ul className="lg:flex gap-4 max-lg:space-y-3 max-lg:fixed bg-gray-800 max-lg:w-3/4 max-lg:top-0 max-lg:h-full max-lg:left-0 max-lg:p-6  z-50">
+          <ul className="lg:flex gap-4 max-lg:space-y-3 max-lg:fixed bg-gray-800 max-lg:w-3/4 max-lg:top-0 max-lg:h-full max-lg:left-0 max-lg:p-6 z-50">
             <li className="max-lg:py-3 px-3">
-              <CustomLink variant={isLinkActive("/urls") ? "primary" : "secondary"} to="/urls">
+              <CustomLink onClick={toggleMenuOpen} variant={isLinkActive("/urls") ? "primary" : "secondary"} to="/urls">
                 Urls
               </CustomLink>
             </li>
             <li className="max-lg:py-3 px-3">
-              <CustomLink variant={isLinkActive("/") ? "primary" : "secondary"} to="/">
+              <CustomLink onClick={toggleMenuOpen} variant={isLinkActive("/") ? "primary" : "secondary"} to="/">
                 About
               </CustomLink>
             </li>
@@ -62,7 +66,7 @@ const MainHeader = () => {
           )}
 
           <button
-            onClick={() => setIsMenuOpen(!isCollapseMenuOpen)}
+            onClick={toggleMenuOpen}
             id="toggleOpen"
             className="lg:hidden"
           >

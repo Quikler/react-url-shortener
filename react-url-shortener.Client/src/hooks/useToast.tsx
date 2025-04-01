@@ -15,6 +15,8 @@ type ToastContextProviderProps = { children: React.ReactNode };
 type ToastPropsExtended = ToastProps & {
   toastId: string;
   completelyInvisible: boolean;
+  transformableMultiplyer: number;
+  toastIndex: number;
 };
 
 export const ToastContextProvider = ({ children }: ToastContextProviderProps) => {
@@ -25,6 +27,8 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
 
   const setToast = (msg: string, type: ToastType) => {
     const toastId = generateUUID();
+    const toastIndex = toastsProps.length - 1;
+
     const newToastProps: ToastPropsExtended = {
       message: msg,
       type: type,
@@ -33,21 +37,41 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
       transitionDuration: TOAST_TRANSITION_DURATION,
       toastId: toastId,
       completelyInvisible: false,
+      transformableMultiplyer: 0,
+      toastIndex: toastIndex,
       onVisibilityChange: (isVisible: boolean) => {
         if (isVisible) {
           setTimeout(() => toggleIsVisible(toastId, false), TOAST_DISPLAY_LIFETIME);
         } else {
-          setToastsProps(prevToasts =>
-            prevToasts.map(t =>
-              t.toastId === toastId ? { ...t, completelyInvisible: true } : t
-            )
-          );
+          setToastsProps(prevToasts => {
+            const currentToast = prevToasts[toastIndex];
+            console.count(`Current toast: ${currentToast}`);
+
+            if (toastIndex + 1 < prevToasts.length) {
+              const nextToast = prevToasts[toastIndex + 1];
+              console.count(`Next toast: ${nextToast}`);
+            }
+
+            return prevToasts.map((t) => {
+              if (t.toastId === toastId) {
+                return { ...t, completelyInvisible: true };
+              } else {
+                return { ...t, transformableMultiplyer: t.transformableMultiplyer === 0 ? 1 : t.transformableMultiplyer + 1, }
+              }
+            })
+          });
         }
       }
     };
 
     // Add the new toast
-    setToastsProps(prevToasts => [...prevToasts, newToastProps]);
+    setToastsProps(prevToasts => {
+      if (prevToasts.length > 0) {
+        const previousToast = prevToasts[prevToasts.length - 1];
+        newToastProps.transformableMultiplyer = previousToast.transformableMultiplyer;
+      }
+      return [...prevToasts, newToastProps];
+    });
 
     // Make it visible shortly after
     setTimeout(() => toggleIsVisible(toastId, true), 10);
@@ -85,8 +109,8 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
       {toastsProps.length !== 0 &&
         <ul className="fixed top-24 right-12 flex flex-col gap-2">
           {toastsProps.map((value) => (
-            !value.completelyInvisible && (
-              <li key={value.toastId}>
+            (
+              <li key={value.toastId} className="transition-transform duration-300 ease-out" style={{ transform: `translateY(${-60 * value.transformableMultiplyer}px)` }}>
                 <Toast
                   type={value.type}
                   message={value.message}
