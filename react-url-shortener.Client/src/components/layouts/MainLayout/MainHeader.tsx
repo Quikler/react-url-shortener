@@ -27,13 +27,13 @@ const MainHeader = () => {
   };
 
   return (
-    <header className="flex fixed shadow-lg p-4 bg-gray-800 w-full z-50">
+    <header className="flex fixed dark:shadow-lg p-4 dark:bg-gray-800 bg-white w-full z-50">
       <div className="flex flex-wrap items-center gap-5 w-full max-w-screen-xl mx-auto">
         <div
           id="collapseMenu"
           className={`lg:flex mx-auto ${isCollapseMenuOpen ? "flex justify-center" : "hidden"}`}
         >
-          <ul className="lg:flex gap-4 max-lg:space-y-3 max-lg:fixed bg-gray-800 max-lg:w-3/4 max-lg:top-0 max-lg:h-full max-lg:left-0 max-lg:p-6 z-50">
+          <ul className="lg:flex gap-4 max-lg:space-y-3 max-lg:fixed bg-white dark:bg-gray-800 max-lg:w-3/4 max-lg:top-0 max-lg:h-full max-lg:left-0 max-lg:p-6 z-50">
             <li className="max-lg:py-3 px-3">
               <CustomLink onClick={toggleMenuOpen} variant={isLinkActive("/urls") ? "primary" : "secondary"} to="/urls">
                 Urls

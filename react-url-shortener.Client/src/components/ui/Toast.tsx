@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import CheckIcon from "../svgr/CheckIcon";
 import Close from "../svgr/Close";
 import ErrorIcon from "../svgr/ErrorIcon";

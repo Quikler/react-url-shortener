@@ -10,7 +10,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <>
       <MainHeader />
-      <main id="main" className="bg-gray-800">{children}</main>
+      <main id="main" className="dark:bg-gray-800 bg-white">{children}</main>
       <MainFooter />
     </>
   );
