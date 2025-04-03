@@ -35,13 +35,13 @@ const ThemeSwitcher = () => {
   }
 
   return <div className="flex gap-2 items-center">
-    <SwgButton className="cursor-pointer" id="system" onClick={toggleTheme}>
+    <SwgButton className={`cursor-pointer ${theme === 'system' ? 'border border-full p-2' : ''}`} id="system" onClick={toggleTheme}>
       <Computer className="dark:fill-gray-200 fill-gray-800" />
     </SwgButton>
-    <SwgButton className="cursor-pointer" id="light" onClick={toggleTheme}>
+    <SwgButton className={`cursor-pointer ${theme === 'light' ? 'border border-full p-2' : ''}`} id="light" onClick={toggleTheme}>
       <Sun className="dark:fill-gray-200 fill-gray-800" />
     </SwgButton>
-    <SwgButton className="cursor-pointer" id="dark" onClick={toggleTheme}>
+    <SwgButton className={`cursor-pointer ${theme === 'dark' ? 'border border-full p-2' : ''}`} id="dark" onClick={toggleTheme}>
       <Moon className="dark:fill-gray-200 fill-gray-800" />
     </SwgButton>
   </div>

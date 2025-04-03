@@ -12,7 +12,7 @@ const SwgButton = ({ variant = "primary", className, ...rest }: SwgButtonProps) 
       "key": "primary",
       "style": "focus:outline-blue-500"
     },
-  ], variant, "rounded focus:outline-1 focus:outline outline-offset-4");
+  ], variant, "rounded-full p-[3px] focus:outline-1 focus:outline outline-offset-4");
 
   return <button className={twMerge(v, className)} {...rest} />
 }
