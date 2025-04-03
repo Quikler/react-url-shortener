@@ -9,6 +9,8 @@ import { handleError } from "@src/utils/helpers";
 import { useToast } from "@src/hooks/useToast";
 
 const LoginForm = () => {
+  console.count('Login Form')
+
   const { loginUser } = useAuth();
   const { danger, success } = useToast();
 
@@ -42,7 +44,7 @@ const LoginForm = () => {
             required: "Username is required",
           })}
           type="text"
-          className="w-full text-white"
+          className="w-full"
           placeholder="Enter username"
         />
         <ErrorMessage>{errors.username?.message}</ErrorMessage>
@@ -55,7 +57,7 @@ const LoginForm = () => {
             minLength: { value: 8, message: "Password must be at least 8 characters long" },
           })}
           type="password"
-          className="w-full text-white"
+          className="w-full"
           placeholder="Enter password"
         />
         <ErrorMessage>{errors.password?.message}</ErrorMessage>

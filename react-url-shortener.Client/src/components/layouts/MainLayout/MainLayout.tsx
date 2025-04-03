@@ -8,11 +8,11 @@ type MainLayoutProps = {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <>
+    <div id="main-layout-wrapper" className="dark:text-gray-200 text-gray-800">
       <MainHeader />
-      <main id="main" className="dark:bg-gray-800 bg-white">{children}</main>
+      <main id="main" className="dark:bg-gray-800 bg-gray-200">{children}</main>
       <MainFooter />
-    </>
+    </div>
   );
 };
 

@@ -39,8 +39,8 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
   };
 
   return (
-    <div className="text-white flex flex-col gap-2">
-      <table className="overflow-hidden w-full rounded-2xl bg-gradient-to-r from-gray-700 to-gray-900">
+    <div className="flex flex-col gap-2">
+      <table className="shadow overflow-hidden w-full rounded-2xl dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-900 from-gray-200 to-gray-200">
         <UrlsTableHeader columns={["Id", "Original URL", "Short URL"]} />
         <tbody className="divide-y-1">
           {urls.map((url) => (
@@ -80,8 +80,8 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
                       {link}
                       {url.userId === user?.id || hasRole(Roles.Admin) ? (
                         <SwgButton onClick={() => handleDeleteUrl(url.id)}>
-                          <Garbage fill="white" role="button" aria-label="Delete url" cursor="pointer" />
-                          </SwgButton>
+                          <Garbage className="fill-gray-800 dark:fill-gray-200" role="button" aria-label="Delete url" cursor="pointer" />
+                        </SwgButton>
                       ) : (
                         <></>
                       )}

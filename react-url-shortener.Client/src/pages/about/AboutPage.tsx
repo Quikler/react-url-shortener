@@ -87,10 +87,10 @@ const AboutPage = () => {
   if (loading) return <LoadingScreen />;
 
   return (
-    <div className="min-h-full py-24 text-white">
+    <div className="min-h-full py-24">
       <div className="mx-auto flex gap-4 flex-col items-center justify-center">
         <p className="text-2xl font-medium">Url shortener algorithm:</p>
-        <div className="flex flex-col p-8 shadow gap-2 bg-gradient-to-r from-gray-700 to-gray-900 rounded-2xl border-black">
+        <div className="flex flex-col p-8 shadow gap-2 bg-gradient-to-r dark:from-gray-700 dark:to-gray-900 from-gray-200 to-gray-200 rounded-2xl border-black">
           <div className="w-2xl">
             <textarea
               readOnly={!about.isAboutEditable}

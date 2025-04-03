@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 const MainFooter = () => {
   return (
-    <footer className="flex justify-center items-center gap-2 dark:bg-gray-800 bg-white py-6">
-      <span className="text-lg text-gray-500 dark:text-white text-center block">
+    <footer className="flex justify-center items-center gap-2 dark:bg-gray-800 bg-gray-200 py-6">
+      <span className="text-lg text-center block">
         <span>© </span>
-        <Link to="/">react-url-shortener</Link> 2025, All rights reserved.
+        <Link to="/">react-url-shortener</Link> {new Date().getFullYear()}, All rights reserved.
       </span>
       <ThemeSwitcher />
     </footer>

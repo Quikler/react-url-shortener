@@ -18,7 +18,7 @@ const UrlInfoModal = ({ isModalOpen, onClose, selectedUrl }: UrlInfoModalProps) 
   const handleCopy = () => navigator.clipboard.writeText(selectedUrl.urlShortened);
 
   return (
-    <Modal title="Choose an option" isOpen={isModalOpen} onClose={onClose} bgClass="bg-gray-700 opacity-75">
+    <Modal title="Choose an option" isOpen={isModalOpen} onClose={onClose} bgClass="dark:bg-gray-700 bg-gray-200 opacity-75">
       <span className="block text-xl">Url:</span> {selectedUrl?.urlShortened}
       <div className="mt-4 flex gap-2">
         <ButtonLink to={(selectedUrl && selectedUrl?.urlShortened) || "#"} target="_blank">

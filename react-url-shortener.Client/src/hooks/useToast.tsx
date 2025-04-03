@@ -44,14 +44,6 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
           setTimeout(() => toggleIsVisible(toastId, false), TOAST_DISPLAY_LIFETIME);
         } else {
           setToastsProps(prevToasts => {
-            const currentToast = prevToasts[toastIndex];
-            console.count(`Current toast: ${currentToast}`);
-
-            if (toastIndex + 1 < prevToasts.length) {
-              const nextToast = prevToasts[toastIndex + 1];
-              console.count(`Next toast: ${nextToast}`);
-            }
-
             return prevToasts.map((t) => {
               if (t.toastId === toastId) {
                 return { ...t, completelyInvisible: true };

@@ -17,5 +17,5 @@
 }
 
 .btn-default {
-  @apply px-3 py-2 rounded text-white cursor-pointer disabled:opacity-65 focus:outline-1 focus:outline outline-offset-4;
+  @apply text-white px-3 py-2 rounded cursor-pointer disabled:opacity-65 focus:outline outline-offset-4;
 }

@@ -40,7 +40,7 @@ const UrlInfoPage = () => {
   if (error) return <ErrorScreen {...error} />
 
   return (
-    <div className="text-white p-8 bg-gradient-to-r from-gray-700 to-gray-900 shadow rounded-2xl border-black flex flex-col gap-3 items-center">
+    <div className="p-8 bg-gradient-to-r from-gray-700 to-gray-900 shadow rounded-2xl border-black flex flex-col gap-3 items-center">
       <p className="text-4xl">Info about url</p>
       <p className="text-2xl break-words">Original url: {urlInfo?.urlOriginal}</p>
       <p className="text-2xl break-words">Shortened version: {urlInfo?.urlShortened}</p>
