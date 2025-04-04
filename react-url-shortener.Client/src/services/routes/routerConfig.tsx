@@ -16,9 +16,10 @@ const routerConfig = [
     element: (
       <AuthProvider>
         <MainLayout>
-          <ToastContextProvider>
-            <App />
-          </ToastContextProvider>
+          <App />
+
+          { /* Toast context for displaying toasts (for instance, toast.warning("test")) */}
+          <ToastContextProvider /> 
         </MainLayout>
       </AuthProvider>
     ),

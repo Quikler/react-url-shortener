@@ -1,3 +1,4 @@
+import { toast } from "@src/hooks/useToast";
 import axios from "axios";
 
 export const throwIfErrorNotCancelError = (error: any) => {
@@ -27,6 +28,10 @@ export const handleError = (error: any, errorFunc: (message: string) => void) =>
     }
   }
 };
+
+export const handleErrorWithToast = (error: any) => {
+  handleError(error, toast.danger);
+}
 
 /**
  * Func to get variant style

@@ -6,11 +6,11 @@ import { useUrls } from "./UrlsContext";
 import { useAuth } from "@src/hooks/useAuth";
 import { UrlResponse } from "@src/services/api/models/Url";
 import { handleError } from "@src/utils/helpers";
-import { useToast } from "@src/hooks/useToast";
 import Button from "@src/components/ui/Buttons/Button";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
 import CustomLink from "@src/components/ui/Links/CustomLink";
 import SwgButton from "@src/components/ui/Buttons/SwgButton";
+import { toast } from "@src/hooks/useToast";
 
 type UrlsTableProps = {
   onShortUrlClick: (url: UrlResponse) => void;
@@ -19,14 +19,13 @@ type UrlsTableProps = {
 const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
   const { user, hasRole } = useAuth();
   const { urls, fetchUrls, totalCount, totalPages, pageNumber, pageSize } = useUrls();
-  const { success, danger } = useToast();
 
   const handleDeleteUrl = async (urlId: string) => {
     try {
       await UrlsShortenerService.delete(urlId);
-      success("Url deleted successfully");
+      toast.success("Url deleted successfully");
     } catch (e: any) {
-      handleError(e, danger);
+      handleError(e, toast.danger);
     }
   };
 
@@ -40,7 +39,7 @@ const UrlsTable = ({ onShortUrlClick }: UrlsTableProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <table className="shadow overflow-hidden w-full rounded-2xl dark:bg-gradient-to-r dark:from-gray-700 dark:to-gray-900 from-gray-200 to-gray-200">
+      <table className="shadow overflow-hidden w-full rounded-2xl bg-gradient-to-r dark:from-gray-700 dark:to-gray-900 from-gray-200 to-gray-200">
         <UrlsTableHeader columns={["Id", "Original URL", "Short URL"]} />
         <tbody className="divide-y-1">
           {urls.map((url) => (

@@ -3,14 +3,13 @@ import ErrorMessage from "@src/components/ui/ErrorMessage";
 import Input from "@src/components/ui/Inputs/Input";
 import Label from "@src/components/ui/Labels/Label";
 import { useAuth } from "@src/hooks/useAuth";
-import { useToast } from "@src/hooks/useToast";
-import { handleError } from "@src/utils/helpers";
+import { toast } from "@src/hooks/useToast";
+import { handleErrorWithToast } from "@src/utils/helpers";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 const SignupForm = () => {
   const { signupUser } = useAuth();
-  const { danger, success } = useToast();
 
   const {
     register,
@@ -29,9 +28,9 @@ const SignupForm = () => {
   const handleFormSubmit = handleSubmit(async (data) => {
     try {
       await signupUser(data);
-      success("Signup successfully");
+      toast.success("Signup successfully");
     } catch (e: any) {
-      handleError(e, danger);
+      handleErrorWithToast(e);
     }
   });
 

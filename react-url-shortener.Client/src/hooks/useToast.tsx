@@ -10,7 +10,7 @@ type ToastContextType = {
 
 const ToastContext = React.createContext({} as ToastContextType);
 
-type ToastContextProviderProps = { children: React.ReactNode };
+let toastFunctions: ToastContextType; // This will store the toast functions for external use.
 
 type ToastPropsExtended = ToastProps & {
   toastId: string;
@@ -19,7 +19,7 @@ type ToastPropsExtended = ToastProps & {
   toastIndex: number;
 };
 
-export const ToastContextProvider = ({ children }: ToastContextProviderProps) => {
+export const ToastContextProvider = () => {
   const TOAST_TRANSITION_DURATION = 1000;
   const TOAST_DISPLAY_LIFETIME = 2000;
 
@@ -96,6 +96,9 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
     danger,
   };
 
+  // Store functions in global singleton
+  toastFunctions = value;
+
   return (
     <ToastContext.Provider value={value}>
       {toastsProps.length !== 0 &&
@@ -116,7 +119,6 @@ export const ToastContextProvider = ({ children }: ToastContextProviderProps) =>
           ))}
         </ul>
       }
-      {children}
     </ToastContext.Provider>
   )
 };
@@ -129,4 +131,10 @@ export const useToast = () => {
   }
 
   return toastContext;
+};
+
+export const toast = {
+  success: (msg: string) => toastFunctions?.success(msg),
+  danger: (msg: string) => toastFunctions?.danger(msg),
+  warning: (msg: string) => toastFunctions?.warning(msg),
 };

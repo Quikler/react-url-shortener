@@ -1,11 +1,11 @@
 import Button from "@src/components/ui/Buttons/Button";
 import ErrorMessage from "@src/components/ui/ErrorMessage";
 import Input from "@src/components/ui/Inputs/Input";
-import { useToast } from "@src/hooks/useToast";
-import { handleError } from "@src/utils/helpers";
+import { handleErrorWithToast } from "@src/utils/helpers";
 import { useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { UrlsShortenerService } from "@src/services/api/UrlsShortenerService";
+import { toast } from "@src/hooks/useToast";
 
 type AddUrlSectionProps = React.HTMLAttributes<HTMLDivElement> & {};
 
@@ -21,14 +21,12 @@ const AddUrlSection = ({ className, ...rest }: AddUrlSectionProps) => {
     },
   });
 
-  const { danger, success } = useToast();
-
   const handleAddUrlSubmit = handleSubmit(async (data) => {
     try {
       await UrlsShortenerService.create(data.url);
-      success("Url created successfully");
+      toast.success("Url created successfully");
     } catch (e: any) {
-      handleError(e, danger);
+      handleErrorWithToast(e);
     }
   });
 

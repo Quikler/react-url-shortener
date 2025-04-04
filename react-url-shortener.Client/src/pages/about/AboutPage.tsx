@@ -2,9 +2,9 @@ import Button from "@src/components/ui/Buttons/Button";
 import { AboutService } from "@src/services/api/AboutService";
 import AdminComponent from "@src/components/HOC/AdminComponent";
 import { useEffect, useReducer, useRef, useState } from "react";
-import { useToast } from "@src/hooks/useToast";
-import { handleError } from "@src/utils/helpers";
+import { handleErrorWithToast } from "@src/utils/helpers";
 import LoadingScreen from "@src/components/ui/LoadingScreen";
+import { toast } from "@src/hooks/useToast";
 
 type AboutState = {
   about: string;
@@ -36,7 +36,6 @@ const aboutReducer = (state: AboutState, action: AboutAction): AboutState => {
 const AboutPage = () => {
   const [loading, setLoading] = useState(true);
 
-  const { danger, success } = useToast();
   const [about, aboutDispatch] = useReducer(aboutReducer, {
     about: "",
     buttonText: "Edit",
@@ -59,7 +58,7 @@ const AboutPage = () => {
         const data = await AboutService.getAbout({ signal: abortController.signal });
         aboutDispatch({ type: "SET_ABOUT", payload: data });
       } catch (e: any) {
-        handleError(e, danger);
+        handleErrorWithToast(e);
       } finally {
         setLoading(false);
       }
@@ -76,9 +75,9 @@ const AboutPage = () => {
     try {
       const newAbout = await AboutService.updateAbout(about.about);
       aboutDispatch({ type: "EDIT", payload: newAbout });
-      success("Url shortener algorithm updated successfully");
+      toast.success("Url shortener algorithm updated successfully");
     } catch (e: any) {
-      handleError(e, danger);
+      handleErrorWithToast(e);
     }
   };
 
