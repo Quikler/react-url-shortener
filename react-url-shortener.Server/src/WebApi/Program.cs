@@ -141,6 +141,12 @@ builder.Services.AddSwaggerGen(c =>
             }, []
         }
     });
+
+    var xmlDocFile = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).FirstOrDefault();
+    if (xmlDocFile is not null)
+    {
+        c.IncludeXmlComments(xmlDocFile);
+    }
 });
 
 var app = builder.Build();

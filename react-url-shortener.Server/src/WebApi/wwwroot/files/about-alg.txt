@@ -1,8 +1,14 @@
-  return (
-    <div className="min-h-full py-24 text-white">
-      <div className="mx-auto flex gap-4 flex-col items-center justify-center">
-        <p className="text-2xl font-medium">Url shortener algorithm:</p>
-        <div className="flex flex-col p-8 shadow gap-2 bg-gradient-to-r from-gray-700 to-gray-900 rounaut.about ? about.about : "SORRY... no algorithm presented :("}
-              onChange={(e) => aboutDispatch({ type: "SET_ABOUT", payload: e.target.value })}
-            />
-          </div>
+    private const string Base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    private static string GenerateShortCode(int length = 6)
+    {
+        var randomBytes = RandomNumberGenerator.GetBytes(length);
+        var shortCode = new StringBuilder(length);
+
+        foreach (var b in randomBytes)
+        {
+            shortCode.Append(Base62Chars[b % Base62Chars.Length]);
+        }
+
+        return shortCode.ToString();
+    }

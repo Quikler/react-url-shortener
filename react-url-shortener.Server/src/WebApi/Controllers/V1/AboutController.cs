@@ -8,6 +8,10 @@ namespace WebApi.Controllers.V1;
 
 public class AboutController(IAboutService aboutService) : BaseApiController
 {
+    /// <summary>
+    /// Gets string repsresentation of url shortener algorithm
+    /// </summary>
+    /// <response code="200">Returns url shortener algorithm</response>
     [HttpGet(ApiRoutes.About.Get)]
     public async Task<IActionResult> GetAbout()
     {
@@ -19,6 +23,10 @@ public class AboutController(IAboutService aboutService) : BaseApiController
         );
     }
 
+    /// <summary>
+    /// Updates url shortener algorithm
+    /// </summary>
+    /// <response code="200">Returns url shortener algorithm</response>
     [Authorize(Roles = "Admin")]
     [HttpPut(ApiRoutes.About.Update)]
     public async Task<IActionResult> UpdateAbout([FromQuery] string newAbout)
