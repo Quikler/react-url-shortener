@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
+using WebApi.Contracts.V1.Requests.About;
 using WebApi.Services.About;
 using WebApi.Utils.Extensions;
 
@@ -29,9 +30,9 @@ public class AboutController(IAboutService aboutService) : BaseApiController
     /// <response code="200">Returns url shortener algorithm</response>
     [Authorize(Roles = "Admin")]
     [HttpPut(ApiRoutes.About.Update)]
-    public async Task<IActionResult> UpdateAbout([FromQuery] string newAbout)
+    public async Task<IActionResult> UpdateAbout([FromBody] UpdateAboutRequest request)
     {
-        var result = await aboutService.UpdateAboutAsync(newAbout);
+        var result = await aboutService.UpdateAboutAsync(request.AboutText);
 
         return result.Match(
             Ok,

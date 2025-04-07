@@ -41,7 +41,7 @@ const Toast = ({
   }
 
   return (
-    <div onTransitionEnd={onTransitionEnd} style={{ transitionDuration: `${transitionDuration}ms`, opacity: isVisible ? 1 : 0 }} className="bg-gradient-to-r dark:from-gray-700 dark:to-gray-900 from-gray-200 to-gray-400 z-[999] flex items-center w-full max-w-xs p-4 rounded-lg shadow-sm transition-opacity"
+    <div onTransitionEnd={onTransitionEnd} style={{ transitionDuration: `${transitionDuration}ms`, opacity: isVisible ? 1 : 0 }} className="bg-gradient-to-r dark:from-gray-700 dark:to-gray-900 from-gray-200 to-gray-200 z-[999] flex items-center w-full max-w-xs p-4 rounded-lg shadow-sm transition-opacity"
       role="alert"
     >
       {GetToastIcon(type)}
