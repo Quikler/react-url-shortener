@@ -23,7 +23,7 @@ public class AboutService(string rootPath) : IAboutService
     /// </returns>
     /// <remarks>
     /// If the file cannot be read (e.g., due to it being missing, inaccessible, or corrupted),
-    /// a <see cref="FailureDto"/> with a bad request message is returned.
+    /// a <see cref="FailureDto.BadRequest(string)"/> with a bad request message is returned.
     /// </remarks>
     public async Task<Result<string, FailureDto>> GetAboutAsync()
     {
@@ -49,7 +49,7 @@ public class AboutService(string rootPath) : IAboutService
     /// </returns>
     /// <remarks>
     /// If the file cannot be written (e.g., due to permission issues or disk errors),
-    /// a <see cref="FailureDto"/> with a bad request message is returned.
+    /// a <see cref="FailureDto.BadRequest(string)"/> with a bad request message is returned.
     /// </remarks>
     public async Task<Result<string, FailureDto>> UpdateAboutAsync(string about)
     {

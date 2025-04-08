@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using WebApi.Configurations;
 using WebApi.Filters;
 using WebApi.Hubs;
+using WebApi.Jobs;
 using WebApi.Providers;
 using WebApi.Repositories.RefreshToken;
 using WebApi.Repositories.Url;
@@ -50,6 +51,8 @@ builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 builder.Services.AddScoped<IAboutService, AboutService>(_ => new AboutService(builder.Environment.WebRootPath));
 builder.Services.AddScoped<IUrlShortenerService, UrlShortenerService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+
+builder.Services.AddHostedService<RefreshTokenRemoverHostedService>();
 
 builder.Services.AddControllers(options =>
 {

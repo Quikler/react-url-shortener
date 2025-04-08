@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
 using WebApi.Contracts.V1.Requests.About;
+using WebApi.Contracts.V1.Responses;
 using WebApi.Services.About;
 using WebApi.Utils.Extensions;
 
 namespace WebApi.Controllers.V1;
 
+[Produces("application/json")]
 public class AboutController(IAboutService aboutService) : BaseApiController
 {
     /// <summary>
@@ -14,6 +16,8 @@ public class AboutController(IAboutService aboutService) : BaseApiController
     /// </summary>
     /// <response code="200">Returns url shortener algorithm</response>
     [HttpGet(ApiRoutes.About.Get)]
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(typeof(FailureResponse), 400)]
     public async Task<IActionResult> GetAbout()
     {
         var result = await aboutService.GetAboutAsync();
@@ -30,6 +34,8 @@ public class AboutController(IAboutService aboutService) : BaseApiController
     /// <response code="200">Returns url shortener algorithm</response>
     [Authorize(Roles = "Admin")]
     [HttpPut(ApiRoutes.About.Update)]
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(typeof(FailureResponse), 400)]
     public async Task<IActionResult> UpdateAbout([FromBody] UpdateAboutRequest request)
     {
         var result = await aboutService.UpdateAboutAsync(request.AboutText);
