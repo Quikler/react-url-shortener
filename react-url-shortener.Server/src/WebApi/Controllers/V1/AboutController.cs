@@ -40,7 +40,7 @@ public class AboutController(IAboutService aboutService) : BaseApiController
     [HttpPut(ApiRoutes.About.Update)]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(FailureResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateAbout([FromBody] UpdateAboutRequest request)
     {
         var result = await aboutService.UpdateAboutAsync(request.AboutText);
