@@ -19,12 +19,12 @@ html, body {
 }
 
 :root * {
-  @apply transition duration-300;
+  @apply transition-colors duration-300;
 }
 
 /* Apply styles only when dark mode is active */
 .dark * {
-  @apply transition duration-300;
+  @apply transition-colors duration-300;
 }
 
 /*body * {*/

@@ -105,7 +105,7 @@ export const ToastContextProvider = () => {
         <ul className="fixed top-24 right-12 flex flex-col gap-2">
           {toastsProps.map((value) => (
             (
-              <li key={value.toastId} className="transition-transform duration-300 ease-out" style={{ transform: `translateY(${-60 * value.transformableMultiplyer}px)` }}>
+              <li key={value.toastId} className="transition-transform! duration-300 ease-out" style={{ transform: `translateY(${-60 * value.transformableMultiplyer}px)` }}>
                 <Toast
                   type={value.type}
                   message={value.message}
