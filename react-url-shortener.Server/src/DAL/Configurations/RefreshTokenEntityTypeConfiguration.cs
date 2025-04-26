@@ -8,6 +8,8 @@ public class RefreshTokenEntityTypeConfiguration : IEntityTypeConfiguration<Refr
 {
     public void Configure(EntityTypeBuilder<RefreshTokenEntity> builder)
     {
+        builder.HasKey(r => r.Id);
+
         builder
             .HasOne(r => r.User)
             .WithMany()

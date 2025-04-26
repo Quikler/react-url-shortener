@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Jobs;
 
+/// <summary>
+/// Provides functionality for removing obsolete refresh tokens.
+/// </summary>
 public class RefreshTokenRemoverHostedService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
